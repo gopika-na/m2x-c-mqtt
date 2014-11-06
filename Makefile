@@ -1,13 +1,13 @@
 AR=ar
 CC=gcc
-CFLAGS=-O2 -Wall -Wextra -std=c89
+CFLAGS=-O3 -Wall -Wextra -std=c89
 LDFLAGS=
 
 BUILD_DIR=build
 M2X_LIB=$(BUILD_DIR)/m2x.a
 OBJS=$(addprefix $(BUILD_DIR)/,m2x.o)
 
-PAHO_CFLAGS=-Wno-unused-variable -Wno-comment -std=c89
+PAHO_CFLAGS=-O3 -Wall -Wextra -Wno-unused-parameter -Wno-unused-variable -Wno-comment -std=c89
 PAHO_PATH=thirdparty/paho
 PAHO_BUILD_DIR=$(BUILD_DIR)/paho
 PAHO_CLIENT_PATH=$(PAHO_PATH)/MQTTClient-C/src
