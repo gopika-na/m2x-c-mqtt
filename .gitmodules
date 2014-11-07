@@ -1,6 +1,3 @@
 [submodule "thirdparty/paho"]
 	path = thirdparty/paho
 	url = git://git.eclipse.org/gitroot/paho/org.eclipse.paho.mqtt.embedded-c.git
-[submodule "thirdparty/parson"]
-	path = thirdparty/parson
-	url = https://github.com/kgabis/parson
