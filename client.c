@@ -9,22 +9,31 @@
 
 #define MESSAGE_ID_LEN 32
 
-/* TODO: Move this into context structs once we heard from paho-dev */
-m2x_json_result g_message_result;
+/* TODO: Move these into context structs once we heard from paho-dev */
+m2x_response g_message_response;
 m2x_context *g_message_ctx;
-
 char g_message_id[MESSAGE_ID_LEN + 1];
-char g_mqtt_buffer[4096];
+int g_got_message = 0;
+
+/* Put the buffer here to avoid stack explosion */
+char g_mqtt_buffer[MQTT_BUFFER_LENGTH];
 
 void messageArrived(MessageData* md)
 {
 	MQTTMessage* message = md->message;
-
-  g_message_ctx->json_parser(message->payload, message->payloadlen,
-                           g_message_id, MESSAGE_ID_LEN, &g_message_result);
+  m2x_json_result result;
+  int s = g_message_ctx->json_parser(message->payload, message->payloadlen,
+                                     g_message_id, MESSAGE_ID_LEN, &result);
+  if (s == M2X_JSON_OK) {
+    g_message_response.status = result.status_code;
+    g_message_response.data = result.data;
+    g_message_response.raw = message->payload;
+    g_message_response.raw_length = message->payloadlen;
+    g_got_message = 1;
+  }
 }
 
-int m2x_client_get(m2x_context *ctx, const char *path, void **out)
+m2x_response m2x_client_get(m2x_context *ctx, const char *path)
 {
   /* TODO: When keepalive is set, use existing connection instead of
    * creating a new one.
@@ -35,10 +44,13 @@ int m2x_client_get(m2x_context *ctx, const char *path, void **out)
   MQTTMessage message;
   MQTTPacket_connectData data = MQTTPacket_connectData_initializer;
 
+  memset(&g_message_response, 0, sizeof(g_message_response));
+
   NewNetwork(network);
   rc = ConnectNetwork(network, M2X_HOST, M2X_PORT);
   if (rc != 0) {
-    return rc;
+    g_message_response.status = rc;
+    return g_message_response;
   }
   MQTTClient(client, network, 1000,
              ctx->buf, MQTT_BUFFER_LENGTH, ctx->readbuf, MQTT_BUFFER_LENGTH);
@@ -55,14 +67,16 @@ int m2x_client_get(m2x_context *ctx, const char *path, void **out)
   if (rc != 0) {
     MQTTDisconnect(client);
     network->disconnect(network);
-    return rc;
+    g_message_response.status = rc;
+    return g_message_response;
   }
 
   rc = MQTTSubscribe(client, ctx->sub_channel, 2, messageArrived);
   if (rc != 0) {
     MQTTDisconnect(client);
     network->disconnect(network);
-    return rc;
+    g_message_response.status = rc;
+    return g_message_response;
   }
 
   fill_random_hex_string(g_message_id, MESSAGE_ID_LEN);
@@ -75,24 +89,23 @@ int m2x_client_get(m2x_context *ctx, const char *path, void **out)
   message.payload = g_mqtt_buffer;
   message.payloadlen = s;
 
-  memset(&g_message_result, 0, sizeof(g_message_result));
   g_message_ctx = ctx;
+  g_got_message = 0;
   rc = MQTTPublish(client, ctx->pub_channel, &message);
   if (rc != 0) {
     MQTTDisconnect(client);
     network->disconnect(network);
-    return rc;
+    g_message_response.status = rc;
+    return g_message_response;
   }
-  while (g_message_result.data == NULL) {
+  while (!g_got_message) {
     rc = MQTTYield(client, 1000);
     if (rc != 0) {
       MQTTDisconnect(client);
       network->disconnect(network);
-      return rc;
+      g_message_response.status = rc;
+      return g_message_response;
     }
   }
-  if (out != NULL) {
-    *out = g_message_result.data;
-  }
-  return g_message_result.status_code;
+  return g_message_response;
 }

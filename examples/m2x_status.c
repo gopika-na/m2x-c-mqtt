@@ -11,11 +11,13 @@ int main()
   m2x_context *ctx = NULL;
   struct json_token *arr = NULL, *tok = NULL;
   int i, status;
+  m2x_response response;
 
   ctx = m2x_open(M2X_KEY);
-  status = m2x_client_get(ctx, "/status", (void**) &arr);
-  printf("Response Status Code: %d\n", status);
-  if (status > 0) {
+  response = m2x_client_get(ctx, "/status");
+  printf("Response Status Code: %d\n", response.status);
+  if (m2x_is_success(&response)) {
+    arr = (struct json_token *) response.data;
     tok = find_json_token(arr, "body.api");
     if (tok != NULL) {
       printf("API Status: ");

@@ -32,13 +32,6 @@ void m2x_close(m2x_context *ctx)
   m2x_free(ctx);
 }
 
-void m2x_set_verbose(m2x_context *ctx, int verbose)
-{
-  if (ctx) {
-    ctx->verbose = verbose;
-  }
-}
-
 void *m2x_malloc(m2x_context *ctx, size_t len)
 {
   return m2x_realloc(ctx, NULL, len);

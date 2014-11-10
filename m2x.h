@@ -8,7 +8,11 @@
 extern "C" {
 #endif
 
-#define MQTT_BUFFER_LENGTH 4096
+/* NOTE: Decrease this number if you are working with limited memory,
+ * however, keep in mind that certain requests may not fit within the
+ * smaller buffer.
+ */
+#define MQTT_BUFFER_LENGTH 8192
 
 typedef struct m2x_context {
   char *pub_channel;
@@ -27,8 +31,6 @@ typedef struct m2x_context {
 
 m2x_context *m2x_open(const char *key);
 void m2x_close(m2x_context *ctx);
-
-void m2x_set_verbose(m2x_context *ctx, int verbose);
 
 void *m2x_malloc(m2x_context *ctx, size_t len);
 void *m2x_realloc(m2x_context *ctx, void *p, size_t len);
