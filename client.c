@@ -31,16 +31,18 @@ int m2x_client_get(m2x_context *ctx, const char *path, void **out)
    */
   Network *network = &(ctx->network);
   Client *client = &(ctx->client);
+  int rc, s;
+  MQTTMessage message;
+  MQTTPacket_connectData data = MQTTPacket_connectData_initializer;
 
   NewNetwork(network);
-  int rc = ConnectNetwork(network, M2X_HOST, M2X_PORT);
+  rc = ConnectNetwork(network, M2X_HOST, M2X_PORT);
   if (rc != 0) {
     return rc;
   }
   MQTTClient(client, network, 1000,
              ctx->buf, MQTT_BUFFER_LENGTH, ctx->readbuf, MQTT_BUFFER_LENGTH);
 
-  MQTTPacket_connectData data = MQTTPacket_connectData_initializer;
   data.willFlag = 0;
   data.MQTTVersion = 3;
   fill_random_hex_string(g_message_id, MESSAGE_ID_LEN);
@@ -65,8 +67,7 @@ int m2x_client_get(m2x_context *ctx, const char *path, void **out)
 
   fill_random_hex_string(g_message_id, MESSAGE_ID_LEN);
   g_message_id[MESSAGE_ID_LEN] = '\0';
-  int s = sprintf(g_mqtt_buffer, "{\"id\": \"%s\", \"method\": \"GET\", \"resource\": \"%s\"}", g_message_id, path);
-  MQTTMessage message;
+  s = sprintf(g_mqtt_buffer, "{\"id\": \"%s\", \"method\": \"GET\", \"resource\": \"%s\"}", g_message_id, path);
   message.qos = 0;
   message.retained = 0;
   message.dup = 0;
