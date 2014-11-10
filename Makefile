@@ -1,6 +1,6 @@
 BUILD_DIR=build
 M2X_LIB=$(BUILD_DIR)/m2x.a
-OBJS=$(addprefix $(BUILD_DIR)/, m2x.o client.o)
+OBJS=$(addprefix $(BUILD_DIR)/, m2x.o client.o json_frozen.o utility.o)
 
 PAHO_PATH=thirdparty/paho
 PAHO_BUILD_DIR=$(BUILD_DIR)/paho
@@ -13,10 +13,10 @@ PAHO_PACKET_OBJS=$(patsubst $(PAHO_PACKET_PATH)/%.c, $(PAHO_BUILD_DIR)/%.o, $(PA
 
 AR=ar
 CC=gcc
-CFLAGS=-O3 -Wall -Wextra -std=c89 -Wno-unused-parameter -Wno-unused-variable -Wno-comment -I $(PAHO_PACKET_PATH) -I $(PAHO_HOST_PATH) -I $(PAHO_BUILD_DIR)
+CFLAGS=-O3 -g -Wall -Wextra -std=gnu99 -Wno-unused-parameter -Wno-unused-variable -Wno-comment -I $(PAHO_PACKET_PATH) -I $(PAHO_HOST_PATH) -I $(PAHO_BUILD_DIR)
 LDFLAGS=
 
-$(M2X_LIB): $(OBJS) $(BUILD_DIR)/parson.o $(PAHO_PACKET_OBJS) $(PAHO_BUILD_DIR)/MQTTClient.o $(PAHO_BUILD_DIR)/$(PAHO_HOST_NAME).o
+$(M2X_LIB): $(OBJS) $(BUILD_DIR)/frozen.o $(PAHO_PACKET_OBJS) $(PAHO_BUILD_DIR)/MQTTClient.o $(PAHO_BUILD_DIR)/$(PAHO_HOST_NAME).o
 	$(AR) -rcs $@ $^
 
 $(BUILD_DIR)/%.o: %.c
@@ -47,7 +47,7 @@ $(PAHO_PACKET_OBJS): | $(PAHO_BUILD_DIR)
 $(PAHO_BUILD_DIR):
 	mkdir -p $@
 
-$(BUILD_DIR)/parson.o: thirdparty/parson/parson.c thirdparty/parson/parson.h
+$(BUILD_DIR)/frozen.o: thirdparty/frozen/frozen.c thirdparty/frozen/frozen.h
 	$(CC) -o $@ $(CFLAGS) -c $<
 
 examples:

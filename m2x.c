@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "json_frozen.h"
 #include "m2x.h"
 
 m2x_context *m2x_open(const char* key)
@@ -12,13 +13,21 @@ m2x_context *m2x_open(const char* key)
   memset(ctx, 0, sizeof(m2x_context));
 
   ctx->verbose = 0;
+  ctx->keepalive = 0;
+  ctx->json_parser = m2x_parse_with_frozen;
   ctx->key = m2x_malloc(ctx, strlen(key) + 1);
   strcpy(ctx->key, key);
+  ctx->pub_channel = m2x_malloc(ctx, strlen(key) + 14);
+  sprintf(ctx->pub_channel, "m2x/%s/requests", key);
+  ctx->sub_channel = m2x_malloc(ctx, strlen(key) + 15);
+  sprintf(ctx->sub_channel, "m2x/%s/responses", key);
   return ctx;
 }
 
 void m2x_close(m2x_context *ctx)
 {
+  m2x_free(ctx->sub_channel);
+  m2x_free(ctx->pub_channel);
   m2x_free(ctx->key);
   m2x_free(ctx);
 }

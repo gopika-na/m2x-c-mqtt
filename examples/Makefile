@@ -11,7 +11,7 @@ PAHO_CLIENT_PATH=$(PAHO_PATH)/MQTTClient-C/src
 PAHO_HOST_PATH=$(PAHO_CLIENT_PATH)/linux
 
 CC=gcc
-CFLAGS=-O2 -Wall -Wextra -std=c89 -Wno-unused-parameter -Wno-unused-variable -Wno-comment -I.. -I $(PAHO_PACKET_PATH) -I $(PAHO_HOST_PATH) -I $(PAHO_BUILD_DIR)
+CFLAGS=-O3 -g -Wall -Wextra -std=gnu99 -Wno-unused-parameter -Wno-unused-variable -Wno-comment -I.. -I $(PAHO_PACKET_PATH) -I $(PAHO_HOST_PATH) -I $(PAHO_BUILD_DIR)
 LDFLAGS=-lcurl
 
 all: $(BINS)
