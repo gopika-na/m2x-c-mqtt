@@ -19,17 +19,13 @@ int main()
     tok = find_json_token(arr, "body.api");
     if (tok != NULL) {
       printf("API Status: ");
-      for (int i = 0; i < tok->len; i++) {
-        putchar(tok->ptr[i]);
-      }
+      fwrite(tok->ptr, sizeof(char), tok->len, stdout);
       printf("\n");
     }
     tok = find_json_token(arr, "body.triggers");
     if (tok != NULL) {
       printf("Triggers Status: ");
-      for (int i = 0; i < tok->len; i++) {
-        putchar(tok->ptr[i]);
-      }
+      fwrite(tok->ptr, sizeof(char), tok->len, stdout);
       printf("\n");
     }
     free(arr);
