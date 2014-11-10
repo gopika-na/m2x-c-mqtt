@@ -33,7 +33,7 @@ void messageArrived(MessageData* md)
   }
 }
 
-m2x_response m2x_client_get(m2x_context *ctx, const char *path)
+m2x_response m2x_client_get(m2x_context *ctx, const char *path, const char *query)
 {
   /* TODO: When keepalive is set, use existing connection instead of
    * creating a new one.
@@ -81,7 +81,12 @@ m2x_response m2x_client_get(m2x_context *ctx, const char *path)
 
   fill_random_hex_string(g_message_id, MESSAGE_ID_LEN);
   g_message_id[MESSAGE_ID_LEN] = '\0';
-  s = sprintf(g_mqtt_buffer, "{\"id\": \"%s\", \"method\": \"GET\", \"resource\": \"%s\"}", g_message_id, path);
+  s = sprintf(g_mqtt_buffer, "{\"id\": \"%s\", \"method\": \"GET\", \"resource\": ", g_message_id);
+  if (strlen(query) > 0) {
+    s += sprintf(g_mqtt_buffer + s, "\"%s?%s\"}", path, query);
+  } else {
+    s += sprintf(g_mqtt_buffer + s, "\"%s\"}", path);
+  }
   message.qos = 0;
   message.retained = 0;
   message.dup = 0;
