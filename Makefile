@@ -1,6 +1,6 @@
 BUILD_DIR=build
 M2X_LIB=$(BUILD_DIR)/m2x.a
-OBJS=$(addprefix $(BUILD_DIR)/, m2x.o client.o json_frozen.o utility.o response.o device.o)
+OBJS=$(addprefix $(BUILD_DIR)/, m2x.o client.o json_frozen.o utility.o response.o device.o distribution.o)
 
 PAHO_PATH=thirdparty/paho
 PAHO_BUILD_DIR=$(BUILD_DIR)/paho
