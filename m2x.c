@@ -8,6 +8,12 @@
 
 extern void message_arrived_callback(MessageData* md);
 
+/* Default releaser that uses free() */
+static void free_releaser(void *p)
+{
+  if (p) { free(p); }
+}
+
 void m2x_open(const char *key, m2x_context *ctx)
 {
   memset(ctx, 0, sizeof(m2x_context));
@@ -15,6 +21,7 @@ void m2x_open(const char *key, m2x_context *ctx)
   ctx->verbose = 0;
   ctx->keepalive = 0;
   ctx->json_parser = m2x_parse_with_frozen;
+  ctx->json_releaser = free_releaser;
 
   strcpy(ctx->key, key);
   sprintf(ctx->pub_channel, "m2x/%s/requests", key);

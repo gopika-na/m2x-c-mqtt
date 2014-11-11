@@ -144,7 +144,7 @@ m2x_response m2x_client_put(m2x_context *ctx, path_filling_function f, const cha
   return g_message_response;
 }
 
-m2x_response m2x_client_delete(m2x_context *ctx, path_filling_function f, const char* args[])
+m2x_response m2x_client_delete(m2x_context *ctx, path_filling_function f, const char* args[], const char *body)
 {
   int rc;
 
@@ -154,7 +154,7 @@ m2x_response m2x_client_delete(m2x_context *ctx, path_filling_function f, const 
   g_message_ctx = ctx;
   g_got_message = 0;
 
-  rc = publish_mqtt_message(ctx, g_message_id, "DELETE", f, args, NULL);
+  rc = publish_mqtt_message(ctx, g_message_id, "DELETE", f, args, body);
   if (rc != 0) {
     g_message_response.status = rc;
     return g_message_response;
@@ -190,8 +190,8 @@ m2x_response m2x_client_put_simple(m2x_context *ctx, const char *path, const cha
   return m2x_client_put(ctx, path_and_query_fill, args, body);
 }
 
-m2x_response m2x_client_delete_simple(m2x_context *ctx, const char *path)
+m2x_response m2x_client_delete_simple(m2x_context *ctx, const char *path, const char *body)
 {
   const char* args[2] = {path, NULL};
-  return m2x_client_delete(ctx, path_and_query_fill, args);
+  return m2x_client_delete(ctx, path_and_query_fill, args, body);
 }

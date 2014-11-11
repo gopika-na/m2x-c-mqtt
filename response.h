@@ -1,6 +1,8 @@
 #ifndef M2X_RESPONSE_H
 #define M2X_RESPONSE_H
 
+#include "m2x.h"
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -23,10 +25,11 @@ typedef struct m2x_response {
   void *data;
 } m2x_response;
 
-int m2x_is_success(m2x_response *response);
-int m2x_is_client_error(m2x_response *response);
-int m2x_is_server_error(m2x_response *response);
-int m2x_is_error(m2x_response *response);
+int m2x_is_success(const m2x_response *response);
+int m2x_is_client_error(const m2x_response *response);
+int m2x_is_server_error(const m2x_response *response);
+int m2x_is_error(const m2x_response *response);
+void m2x_release_response(m2x_context *ctx, m2x_response *response);
 
 #if defined(__cplusplus)
 }  /* extern "C" { */

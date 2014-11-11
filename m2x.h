@@ -32,8 +32,9 @@ typedef struct m2x_context {
 
   /* Options */
   int verbose;
-  m2x_json_parser json_parser;
   int keepalive;
+  m2x_json_parser json_parser;
+  m2x_json_releaser json_releaser;
 
   /* Paho API part */
   Network network;

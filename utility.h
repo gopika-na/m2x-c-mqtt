@@ -7,6 +7,7 @@ extern "C" {
 
 typedef int (*path_filling_function)(char *buffer, const char *args[]);
 
+int query_with_interleave_fill(char *buffer, const char *args[]);
 int interleave_path_and_param_fill(char *buffer, const char *args[]);
 int path_and_query_fill(char *buffer, const char *args[]);
 

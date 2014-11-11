@@ -19,6 +19,7 @@ typedef enum m2x_json_status {
 typedef m2x_json_status (*m2x_json_parser) (const char *, int,
                                             const char *, int,
                                             m2x_json_result *);
+typedef void (*m2x_json_releaser) (void *);
 
 #if defined(__cplusplus)
 }  /* extern "C" { */

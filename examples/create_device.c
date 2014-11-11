@@ -46,8 +46,8 @@ int main()
                           find_json_token(arr, "body.description"));
     print_token_as_string("Device Visibility: ", find_json_token(arr, "body.visibility"));
     print_token_as_string("Device Groups: ", find_json_token(arr, "body.groups"));
-    free(arr);
   }
+  m2x_release_response(&ctx, &response);
   m2x_close(&ctx);
   return 0;
 }

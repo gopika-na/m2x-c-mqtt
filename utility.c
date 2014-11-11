@@ -85,3 +85,21 @@ int interleave_path_and_param_fill(char *buffer, const char *args[])
   }
   return s;
 }
+
+int query_with_interleave_fill(char *buffer, const char *args[])
+{
+  const char *query = args[0];
+  int i = 1, s = 0;
+  while (args[i] != NULL) {
+    if (i % 2 == 0) {
+      s += m2x_internal_encode_string(buffer + s, args[i]);
+    } else {
+      s += sprintf(buffer + s, "%s", args[i]);
+    }
+    i++;
+  }
+  if (query && strlen(query) > 0) {
+    s += sprintf(buffer + s, "?%s", query);
+  }
+  return s;
+}

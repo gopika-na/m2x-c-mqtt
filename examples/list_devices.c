@@ -65,8 +65,8 @@ int main()
         i++;
       }
     }
-    free(arr);
   }
+  m2x_release_response(&ctx, &response);
   m2x_close(&ctx);
   return 0;
 }
