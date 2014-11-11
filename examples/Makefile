@@ -1,7 +1,7 @@
 BUILD_DIR=../build
 EXAMPLES_BUILD_DIR=$(BUILD_DIR)/examples
 M2X_LIB=$(BUILD_DIR)/m2x.a
-BINS=$(addprefix $(EXAMPLES_BUILD_DIR)/,m2x_status list_devices)
+BINS=$(addprefix $(EXAMPLES_BUILD_DIR)/,m2x_status list_devices create_device)
 OBJS=$(addsuffix .o, $(BINS))
 
 PAHO_PATH=../thirdparty/paho

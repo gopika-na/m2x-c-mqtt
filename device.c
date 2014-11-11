@@ -15,3 +15,8 @@ m2x_response m2x_device_groups(m2x_context *ctx)
 {
   return m2x_client_get(ctx, "/devices/groups", NULL);
 }
+
+m2x_response m2x_device_create(m2x_context *ctx, const char *data)
+{
+  return m2x_client_post(ctx, "/devices", data);
+}
