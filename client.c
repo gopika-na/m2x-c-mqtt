@@ -61,9 +61,7 @@ int publish_mqtt_message(m2x_context *ctx, const char *id, const char *method,
 
 m2x_response m2x_client_get(m2x_context *ctx, const char *path, const char *query)
 {
-  int rc, s;
-  MQTTMessage message;
-  Client *client = &(ctx->client);
+  int rc;
 
   memset(&g_message_response, 0, sizeof(g_message_response));
   fill_random_hex_string(g_message_id, M2X_MESSAGE_ID_LEN);
@@ -72,6 +70,90 @@ m2x_response m2x_client_get(m2x_context *ctx, const char *path, const char *quer
   g_got_message = 0;
 
   rc = publish_mqtt_message(ctx, g_message_id, "GET", path, query, NULL);
+  if (rc != 0) {
+    g_message_response.status = rc;
+    return g_message_response;
+  }
+  while (!g_got_message) {
+    rc = m2x_mqtt_yield(ctx);
+    if (rc != 0) {
+      g_message_response.status = rc;
+      return g_message_response;
+    }
+  }
+  if (!ctx->keepalive) {
+    m2x_mqtt_disconnect(ctx);
+  }
+  return g_message_response;
+}
+
+m2x_response m2x_client_post(m2x_context *ctx, const char *path, const char *body)
+{
+  int rc;
+
+  memset(&g_message_response, 0, sizeof(g_message_response));
+  fill_random_hex_string(g_message_id, M2X_MESSAGE_ID_LEN);
+  g_message_id[M2X_MESSAGE_ID_LEN] = '\0';
+  g_message_ctx = ctx;
+  g_got_message = 0;
+
+  rc = publish_mqtt_message(ctx, g_message_id, "POST", path, NULL, body);
+  if (rc != 0) {
+    g_message_response.status = rc;
+    return g_message_response;
+  }
+  while (!g_got_message) {
+    rc = m2x_mqtt_yield(ctx);
+    if (rc != 0) {
+      g_message_response.status = rc;
+      return g_message_response;
+    }
+  }
+  if (!ctx->keepalive) {
+    m2x_mqtt_disconnect(ctx);
+  }
+  return g_message_response;
+}
+
+m2x_response m2x_client_put(m2x_context *ctx, const char *path, const char *body)
+{
+  int rc;
+
+  memset(&g_message_response, 0, sizeof(g_message_response));
+  fill_random_hex_string(g_message_id, M2X_MESSAGE_ID_LEN);
+  g_message_id[M2X_MESSAGE_ID_LEN] = '\0';
+  g_message_ctx = ctx;
+  g_got_message = 0;
+
+  rc = publish_mqtt_message(ctx, g_message_id, "PUT", path, NULL, body);
+  if (rc != 0) {
+    g_message_response.status = rc;
+    return g_message_response;
+  }
+  while (!g_got_message) {
+    rc = m2x_mqtt_yield(ctx);
+    if (rc != 0) {
+      g_message_response.status = rc;
+      return g_message_response;
+    }
+  }
+  if (!ctx->keepalive) {
+    m2x_mqtt_disconnect(ctx);
+  }
+  return g_message_response;
+}
+
+m2x_response m2x_client_delete(m2x_context *ctx, const char *path)
+{
+  int rc;
+
+  memset(&g_message_response, 0, sizeof(g_message_response));
+  fill_random_hex_string(g_message_id, M2X_MESSAGE_ID_LEN);
+  g_message_id[M2X_MESSAGE_ID_LEN] = '\0';
+  g_message_ctx = ctx;
+  g_got_message = 0;
+
+  rc = publish_mqtt_message(ctx, g_message_id, "DELETE", path, NULL, NULL);
   if (rc != 0) {
     g_message_response.status = rc;
     return g_message_response;
