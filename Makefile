@@ -13,7 +13,7 @@ PAHO_PACKET_OBJS=$(patsubst $(PAHO_PACKET_PATH)/%.c, $(PAHO_BUILD_DIR)/%.o, $(PA
 
 AR=ar
 CC=gcc
-CFLAGS=-O3 -g -Wall -Wextra -std=gnu99 -Wno-unused-parameter -Wno-unused-variable -Wno-unused-but-set-variable -Wno-comment -I $(PAHO_PACKET_PATH) -I $(PAHO_HOST_PATH) -I $(PAHO_BUILD_DIR)
+CFLAGS=-O3 -g -Wall -Wextra -std=gnu99 -Wno-unused-parameter -Wno-unused-variable -Wno-comment -I $(PAHO_PACKET_PATH) -I $(PAHO_HOST_PATH) -I $(PAHO_BUILD_DIR)
 LDFLAGS=
 
 $(M2X_LIB): $(OBJS) $(BUILD_DIR)/frozen.o $(PAHO_PACKET_OBJS) $(PAHO_BUILD_DIR)/MQTTClient.o $(PAHO_BUILD_DIR)/$(PAHO_HOST_NAME).o
