@@ -6,6 +6,8 @@ extern "C" {
 #endif
 
 void fill_random_hex_string(char *buf, int len);
+int fill_request_buffer(char *buffer, const char *id, const char *method,
+                        const char *path, const char *query, const char *body);
 
 #if defined(__cplusplus)
 }  /* extern "C" { */

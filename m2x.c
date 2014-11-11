@@ -1,58 +1,99 @@
-#include <curl/curl.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "json_frozen.h"
 #include "m2x.h"
+#include "utility.h"
 
-m2x_context *m2x_open(const char* key)
+extern void message_arrived_callback(MessageData* md);
+
+void m2x_open(const char *key, m2x_context *ctx)
 {
-  m2x_context *ctx;
-  ctx = (m2x_context *) m2x_malloc(NULL, sizeof(m2x_context));
   memset(ctx, 0, sizeof(m2x_context));
 
   ctx->verbose = 0;
   ctx->keepalive = 0;
   ctx->json_parser = m2x_parse_with_frozen;
-  ctx->key = m2x_malloc(ctx, strlen(key) + 1);
+
   strcpy(ctx->key, key);
-  ctx->pub_channel = m2x_malloc(ctx, strlen(key) + 14);
   sprintf(ctx->pub_channel, "m2x/%s/requests", key);
-  ctx->sub_channel = m2x_malloc(ctx, strlen(key) + 15);
   sprintf(ctx->sub_channel, "m2x/%s/responses", key);
-  return ctx;
 }
 
 void m2x_close(m2x_context *ctx)
 {
-  m2x_free(ctx->sub_channel);
-  m2x_free(ctx->pub_channel);
-  m2x_free(ctx->key);
-  m2x_free(ctx);
+  m2x_mqtt_disconnect(ctx);
 }
 
-void *m2x_malloc(m2x_context *ctx, size_t len)
+int m2x_mqtt_connect(m2x_context *ctx)
 {
-  return m2x_realloc(ctx, NULL, len);
-}
+  Network *network = &(ctx->network);
+  Client *client = &(ctx->client);
+  int rc;
+  MQTTPacket_connectData data = MQTTPacket_connectData_initializer;
 
-void *m2x_realloc(m2x_context *ctx, void *p, size_t len)
-{
-  void *p2;
-
-  p2 = realloc(p, len);
-  if (!p2) {
-    /* Not enough memory */
-    m2x_close(ctx);
-    exit(ENOMEM);
+  if (client->isconnected) {
+    return 0;
   }
-  return p2;
+
+  NewNetwork(network);
+  rc = ConnectNetwork(network, M2X_HOST, M2X_PORT);
+  if (rc != 0) {
+    network->disconnect(network);
+    return rc;
+  }
+  MQTTClient(client, network, 1000,
+             ctx->buf, M2X_BUFFER_LENGTH,
+             ctx->readbuf, M2X_BUFFER_LENGTH);
+
+  data.willFlag = 0;
+  data.MQTTVersion = 3;
+  fill_random_hex_string(ctx->assemble_buffer, M2X_MESSAGE_ID_LEN);
+  data.clientID.cstring = ctx->assemble_buffer;
+  data.username.cstring = ctx->key;
+  data.keepAliveInterval = 60;
+  data.cleansession = 1;
+
+  rc = MQTTConnect(client, &data);
+  if (rc != 0) {
+    MQTTDisconnect(client);
+    network->disconnect(network);
+    return rc;
+  }
+
+  rc = MQTTSubscribe(client, ctx->sub_channel, 2, message_arrived_callback);
+  if (rc != 0) {
+    MQTTDisconnect(client);
+    network->disconnect(network);
+    return rc;
+  }
+  return rc;
 }
 
-void m2x_free(void *p)
-{
-  if (p) {
-    free(p);
+void m2x_mqtt_disconnect(m2x_context *ctx) {
+  Network *network = &(ctx->network);
+  Client *client = &(ctx->client);
+
+  if (client->isconnected) {
+    MQTTDisconnect(client);
+    network->disconnect(network);
   }
+}
+
+int m2x_mqtt_is_connected(m2x_context *ctx) {
+  return ctx->client.isconnected;
+}
+
+int m2x_mqtt_yield(m2x_context *ctx) {
+  Client *client = &(ctx->client);
+  int rc;
+  if (!m2x_mqtt_is_connected(ctx)) {
+    return 0;
+  }
+  rc = MQTTYield(client, M2X_TIMEOUT_MS);
+  if (rc != 0) {
+    m2x_mqtt_disconnect(ctx);
+  }
+  return rc;
 }

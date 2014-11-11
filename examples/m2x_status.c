@@ -8,13 +8,13 @@ const char *M2X_KEY="";
 
 int main()
 {
-  m2x_context *ctx = NULL;
+  m2x_context ctx;
   struct json_token *arr = NULL, *tok = NULL;
   int i, status;
   m2x_response response;
 
-  ctx = m2x_open(M2X_KEY);
-  response = m2x_client_get(ctx, "/status");
+  m2x_open(M2X_KEY, &ctx);
+  response = m2x_client_get(&ctx, "/status", NULL);
   printf("Response Status Code: %d\n", response.status);
   if (m2x_is_success(&response)) {
     arr = (struct json_token *) response.data;
@@ -33,7 +33,7 @@ int main()
     free(arr);
   }
 
-  m2x_close(ctx);
+  m2x_close(&ctx);
 
   return 0;
 }
