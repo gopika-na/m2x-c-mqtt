@@ -14,7 +14,7 @@ int main()
   m2x_response response;
 
   m2x_open(M2X_KEY, &ctx);
-  response = m2x_client_get(&ctx, "/status", NULL);
+  response = m2x_client_get_simple(&ctx, "/status", NULL);
   printf("Response Status Code: %d\n", response.status);
   if (m2x_is_success(&response)) {
     arr = (struct json_token *) response.data;

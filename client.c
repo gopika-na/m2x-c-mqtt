@@ -29,7 +29,8 @@ void message_arrived_callback(MessageData* md)
 }
 
 int publish_mqtt_message(m2x_context *ctx, const char *id, const char *method,
-                         const char *path, const char *query, const char *body)
+                         path_filling_function f, const char *args[],
+                         const char *body)
 {
   int rc, s;
   MQTTMessage message;
@@ -43,8 +44,8 @@ int publish_mqtt_message(m2x_context *ctx, const char *id, const char *method,
     }
   }
 
-  s = fill_request_buffer(ctx->assemble_buffer, g_message_id, method,
-                          path, query, body);
+  s = fill_request_buffer_with_func(ctx->assemble_buffer, g_message_id, method,
+                                    f, args, body);
   message.qos = 0;
   message.retained = 0;
   message.dup = 0;
@@ -59,7 +60,7 @@ int publish_mqtt_message(m2x_context *ctx, const char *id, const char *method,
   return rc;
 }
 
-m2x_response m2x_client_get(m2x_context *ctx, const char *path, const char *query)
+m2x_response m2x_client_get(m2x_context *ctx, path_filling_function f, const char* args[])
 {
   int rc;
 
@@ -69,7 +70,7 @@ m2x_response m2x_client_get(m2x_context *ctx, const char *path, const char *quer
   g_message_ctx = ctx;
   g_got_message = 0;
 
-  rc = publish_mqtt_message(ctx, g_message_id, "GET", path, query, NULL);
+  rc = publish_mqtt_message(ctx, g_message_id, "GET", f, args, NULL);
   if (rc != 0) {
     g_message_response.status = rc;
     return g_message_response;
@@ -87,7 +88,7 @@ m2x_response m2x_client_get(m2x_context *ctx, const char *path, const char *quer
   return g_message_response;
 }
 
-m2x_response m2x_client_post(m2x_context *ctx, const char *path, const char *body)
+m2x_response m2x_client_post(m2x_context *ctx, path_filling_function f, const char* args[], const char *body)
 {
   int rc;
 
@@ -97,7 +98,7 @@ m2x_response m2x_client_post(m2x_context *ctx, const char *path, const char *bod
   g_message_ctx = ctx;
   g_got_message = 0;
 
-  rc = publish_mqtt_message(ctx, g_message_id, "POST", path, NULL, body);
+  rc = publish_mqtt_message(ctx, g_message_id, "POST", f, args, body);
   if (rc != 0) {
     g_message_response.status = rc;
     return g_message_response;
@@ -115,7 +116,7 @@ m2x_response m2x_client_post(m2x_context *ctx, const char *path, const char *bod
   return g_message_response;
 }
 
-m2x_response m2x_client_put(m2x_context *ctx, const char *path, const char *body)
+m2x_response m2x_client_put(m2x_context *ctx, path_filling_function f, const char* args[], const char *body)
 {
   int rc;
 
@@ -125,7 +126,7 @@ m2x_response m2x_client_put(m2x_context *ctx, const char *path, const char *body
   g_message_ctx = ctx;
   g_got_message = 0;
 
-  rc = publish_mqtt_message(ctx, g_message_id, "PUT", path, NULL, body);
+  rc = publish_mqtt_message(ctx, g_message_id, "PUT", f, args, body);
   if (rc != 0) {
     g_message_response.status = rc;
     return g_message_response;
@@ -143,7 +144,7 @@ m2x_response m2x_client_put(m2x_context *ctx, const char *path, const char *body
   return g_message_response;
 }
 
-m2x_response m2x_client_delete(m2x_context *ctx, const char *path)
+m2x_response m2x_client_delete(m2x_context *ctx, path_filling_function f, const char* args[])
 {
   int rc;
 
@@ -153,7 +154,7 @@ m2x_response m2x_client_delete(m2x_context *ctx, const char *path)
   g_message_ctx = ctx;
   g_got_message = 0;
 
-  rc = publish_mqtt_message(ctx, g_message_id, "DELETE", path, NULL, NULL);
+  rc = publish_mqtt_message(ctx, g_message_id, "DELETE", f, args, NULL);
   if (rc != 0) {
     g_message_response.status = rc;
     return g_message_response;
@@ -169,4 +170,28 @@ m2x_response m2x_client_delete(m2x_context *ctx, const char *path)
     m2x_mqtt_disconnect(ctx);
   }
   return g_message_response;
+}
+
+m2x_response m2x_client_get_simple(m2x_context *ctx, const char *path, const char *query)
+{
+  const char* args[2] = {path, query};
+  return m2x_client_get(ctx, path_and_query_fill, args);
+}
+
+m2x_response m2x_client_post_simple(m2x_context *ctx, const char *path, const char *body)
+{
+  const char* args[2] = {path, NULL};
+  return m2x_client_post(ctx, path_and_query_fill, args, body);
+}
+
+m2x_response m2x_client_put_simple(m2x_context *ctx, const char *path, const char *body)
+{
+  const char* args[2] = {path, NULL};
+  return m2x_client_put(ctx, path_and_query_fill, args, body);
+}
+
+m2x_response m2x_client_delete_simple(m2x_context *ctx, const char *path)
+{
+  const char* args[2] = {path, NULL};
+  return m2x_client_delete(ctx, path_and_query_fill, args);
 }
