@@ -17,7 +17,11 @@ If you have questions about any M2X specific terms, please consult the M2X gloss
 Setup
 =============
 
-This library is written using [C99](http://en.wikipedia.org/wiki/ANSI_C) standard. Any decent C compilers, including gcc and clang, can be used to compile the library. The only external dependencies needed are [paho](http://git.eclipse.org/c/paho/org.eclipse.paho.mqtt.embedded-c.git/) for MQTT communications, and [frozen](https://github.com/cesanta/frozen) for JSON parsing. Both are already packed as submodules. So you can simply build the library and examples following the next steps:
+This library is written using [C99](http://en.wikipedia.org/wiki/ANSI_C) standard. Any decent C compilers, including gcc and clang, can be used to compile the library. The only external dependencies needed are [paho](http://git.eclipse.org/c/paho/org.eclipse.paho.mqtt.embedded-c.git/) for MQTT communications, and [frozen](https://github.com/cesanta/frozen) for JSON parsing.
+
+The library uses no dynamic memory allocation except for the JSON parser part in order to achieve maximum compatability with embedded boards.
+
+To bulid the library and examples, use the following steps:
 
 ```
 $ git clone https://github.com/attm2x/m2x-c-mqtt.git
@@ -51,6 +55,8 @@ All API functions will have the following type of signature:
 ```
 m2x_response m2x_some_api_function(m2x_context *ctx, const char *arg1, const char *arg2, ...);
 ```
+
+Notice that this library wraps the MQTT communications completely: you don't need to do the MQTT connection manually, the library will take care of that for you. All you need to do is calling the correct functions.
 
 Depending the exact function in use, different number of arguments may be present. For example, below is a function used to list stream values of a device:
 
@@ -215,6 +221,21 @@ typedef void (*m2x_json_releaser) (void *);
 ```
 
 Setting this function to `json_releaser` field in `m2x_context`, then the library will use your new memory releaser to do the job.
+
+## Preparing data for writer functions
+
+You can also send data to M2X service using this library. The following function can be used to update stream values:
+
+
+```
+m2x_response m2x_device_update_stream(m2x_context *ctx, const char *id, const char *name, const char *data);
+```
+
+`id` and `name` are just plain strings representing device ID and stream name respectively. The `data` field here is actually a JSON string containing the data to send. We use plain `const char *` type for maximum flexibility. You can you any JSON serializer that you like to do the job.
+
+Notice the packed `frozen` library also has a JSON serializer, you can refer to [our example](https://github.com/attm2x/m2x-c-mqtt/blob/master/examples/create_device.c#L33) and the [README](https://github.com/cesanta/frozen/blob/master/README.md) of frozen for how this is working.
+
+Last but not least, you can always use `sprintf` to prepare the JSON string if it is not very complicated.
 
 License
 =======
