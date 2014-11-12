@@ -22,7 +22,7 @@ This library is written using [C99](http://en.wikipedia.org/wiki/ANSI_C) standar
 ```
 $ git clone https://github.com/attm2x/m2x-c-mqtt.git
 $ cd m2x-c-mqtt
-$ git submodule update --init
+$ make setup
 $ make
 $ make examples
 ```

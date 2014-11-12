@@ -56,4 +56,7 @@ examples:
 clean:
 	rm -rf $(BUILD_DIR)
 
-.PHONY: clean examples
+setup:
+	git submodule update --init
+
+.PHONY: clean examples setup
