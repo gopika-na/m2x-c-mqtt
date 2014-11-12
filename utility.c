@@ -6,6 +6,9 @@
 
 #include "utility.h"
 
+/* Right now, this library only works with API v2 */
+#define M2X_API_VERSION "/v2"
+
 void fill_random_hex_string(char *buf, int len)
 {
   int i, v;
@@ -37,7 +40,7 @@ int fill_request_buffer_with_func(char *buffer, const char *id, const char *meth
                                   path_filling_function f, const char *args[],
                                   const char *body)
 {
-  int s = sprintf(buffer, "{\"id\":\"%s\",\"method\":\"%s\",\"resource\":\"", id, method);
+  int s = sprintf(buffer, "{\"id\":\"%s\",\"method\":\"%s\",\"resource\":\"%s", id, method, M2X_API_VERSION);
   s += f(buffer + s, args);
   s += sprintf(buffer + s, "\"");
   if (body && strlen(body) > 0) {
