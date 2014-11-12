@@ -136,7 +136,7 @@ FYI, here's a sample reply that the code piece listed here is handling:
     "devices": [
       {
         "id": "059c21d01876a31c8a85db65a8dad9c8",
-        "url": "http://http://api-m2x.att.com//v2/devices/059c21d01876a31c8a85db65a8dad9c8",
+        "url": "http://api-m2x.att.com//v2/devices/059c21d01876a31c8a85db65a8dad9c8",
         "name": "API Batch",
         "status": "enabled",
         "serial": "ABC1234",
