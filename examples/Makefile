@@ -4,7 +4,7 @@ M2X_LIB=$(BUILD_DIR)/m2x.a
 BINS=$(addprefix $(EXAMPLES_BUILD_DIR)/,m2x_status list_devices create_device update_device delete_device_values)
 OBJS=$(addsuffix .o, $(BINS))
 
-PAHO_PATH=../thirdparty/paho
+PAHO_PATH=../vendor/paho
 PAHO_BUILD_DIR=$(BUILD_DIR)/paho
 PAHO_PACKET_PATH=$(PAHO_PATH)/MQTTPacket/src
 PAHO_CLIENT_PATH=$(PAHO_PATH)/MQTTClient-C/src

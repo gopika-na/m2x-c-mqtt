@@ -2,7 +2,7 @@ BUILD_DIR=build
 M2X_LIB=$(BUILD_DIR)/m2x.a
 OBJS=$(addprefix $(BUILD_DIR)/, m2x.o client.o json_frozen.o utility.o response.o device.o distribution.o key.o chart.o)
 
-PAHO_PATH=thirdparty/paho
+PAHO_PATH=vendor/paho
 PAHO_BUILD_DIR=$(BUILD_DIR)/paho
 PAHO_CLIENT_PATH=$(PAHO_PATH)/MQTTClient-C/src
 PAHO_HOST_PATH=$(PAHO_CLIENT_PATH)/linux
@@ -47,7 +47,7 @@ $(PAHO_PACKET_OBJS): | $(PAHO_BUILD_DIR)
 $(PAHO_BUILD_DIR):
 	mkdir -p $@
 
-$(BUILD_DIR)/frozen.o: thirdparty/frozen/frozen.c thirdparty/frozen/frozen.h
+$(BUILD_DIR)/frozen.o: vendor/frozen/frozen.c vendor/frozen/frozen.h
 	$(CC) -o $@ $(CFLAGS) -c $<
 
 examples:

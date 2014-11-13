@@ -2,7 +2,7 @@
 
 #include "m2x.h"
 #include "client.h"
-#include "thirdparty/frozen/frozen.h"
+#include "vendor/frozen/frozen.h"
 
 const char *M2X_KEY="";
 

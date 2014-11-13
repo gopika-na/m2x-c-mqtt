@@ -3,7 +3,7 @@
 
 #include "m2x.h"
 #include "device.h"
-#include "thirdparty/frozen/frozen.h"
+#include "vendor/frozen/frozen.h"
 
 const char *M2X_KEY="";
 const char *name = "";

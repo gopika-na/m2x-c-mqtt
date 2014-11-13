@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include "json_frozen.h"
-#include "thirdparty/frozen/frozen.h"
+#include "vendor/frozen/frozen.h"
 
 m2x_json_status m2x_parse_with_frozen(const char *str, int length,
                                       const char *id_str, int id_length,
