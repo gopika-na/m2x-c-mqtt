@@ -1,6 +1,6 @@
-[submodule "thirdparty/paho"]
-	path = thirdparty/paho
+[submodule "vendor/paho"]
+	path = vendor/paho
 	url = git://git.eclipse.org/gitroot/paho/org.eclipse.paho.mqtt.embedded-c.git
-[submodule "thirdparty/frozen"]
-	path = thirdparty/frozen
+[submodule "vendor/frozen"]
+	path = vendor/frozen
 	url = https://github.com/cesanta/frozen
