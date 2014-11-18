@@ -22,6 +22,10 @@ void m2x_open(const char *key, m2x_context *ctx)
   ctx->keepalive = 0;
   ctx->json_parser = m2x_parse_with_frozen;
   ctx->json_releaser = free_releaser;
+  /* Use SSL by default if at all possible */
+#ifdef HAS_SSL
+  ctx->use_ssl = 1;
+#endif  /* HAS_SSL */
 
   strcpy(ctx->key, key);
   sprintf(ctx->pub_channel, "m2x/%s/requests", key);
@@ -35,7 +39,16 @@ void m2x_close(m2x_context *ctx)
 
 int m2x_mqtt_connect(m2x_context *ctx)
 {
-  Network *network = &(ctx->network);
+#ifdef HAS_SSL
+  Network *network;
+  if (ctx->use_ssl) {
+    network = (Network *) (&(ctx->network.openssl));
+  } else {
+    network = &(ctx->network.native);
+  }
+#else
+  Network *network = &(ctx->network.native);
+#endif  /* HAS_SSL */
   Client *client = &(ctx->client);
   int rc;
   MQTTPacket_connectData data = MQTTPacket_connectData_initializer;
@@ -44,8 +57,18 @@ int m2x_mqtt_connect(m2x_context *ctx)
     return 0;
   }
 
+#ifdef HAS_SSL
+  if (ctx->use_ssl) {
+    NewOpenSSLNetwork((OpenSSLNetwork *) network);
+    rc = ConnectOpenSSLNetwork((OpenSSLNetwork *) network, M2X_HOST, M2X_SSL_PORT);
+  } else {
+    NewNetwork(network);
+    rc = ConnectNetwork(network, M2X_HOST, M2X_PORT);
+  }
+#else
   NewNetwork(network);
   rc = ConnectNetwork(network, M2X_HOST, M2X_PORT);
+#endif  /* HAS_SSL */
   if (rc != 0) {
     network->disconnect(network);
     return rc;
@@ -79,7 +102,16 @@ int m2x_mqtt_connect(m2x_context *ctx)
 }
 
 void m2x_mqtt_disconnect(m2x_context *ctx) {
-  Network *network = &(ctx->network);
+#ifdef HAS_SSL
+  Network *network;
+  if (ctx->use_ssl) {
+    network = (Network *) (&(ctx->network.openssl));
+  } else {
+    network = &(ctx->network.native);
+  }
+#else
+  Network *network = &(ctx->network.native);
+#endif  /* HAS_SSL */
   Client *client = &(ctx->client);
 
   if (client->isconnected) {

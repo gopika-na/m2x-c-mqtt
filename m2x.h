@@ -4,6 +4,10 @@
 #include "MQTTClient.h"
 #include "json.h"
 
+#ifdef HAS_SSL
+#include "openssl.h"
+#endif  /* HAS_SSL */
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -21,6 +25,10 @@ extern "C" {
 #define M2X_PUBLISH_CHANNEL_LENGTH (M2X_KEY_MAX_LENGTH + 13)
 #define M2X_SUBSCRIBE_CHANNEL_LENGTH (M2X_KEY_MAX_LENGTH + 14)
 
+#ifdef HAS_SSL
+#define M2X_SSL_PORT 8883
+#endif  /* HAS_SSL */
+
 typedef struct m2x_context {
   /* Buffers used to communicate with paho API, notice all buffers here
    * are NULL-terminated
@@ -35,9 +43,17 @@ typedef struct m2x_context {
   int keepalive;
   m2x_json_parser json_parser;
   m2x_json_releaser json_releaser;
+#ifdef HAS_SSL
+  int use_ssl;
+#endif  /* HAS_SSL */
 
   /* Paho API part */
-  Network network;
+  union {
+    Network native;
+#ifdef HAS_SSL
+    OpenSSLNetwork openssl;
+#endif  /* HAS_SSL */
+  } network;
   Client client;
   unsigned char buf[M2X_BUFFER_LENGTH];
   unsigned char readbuf[M2X_BUFFER_LENGTH];

@@ -48,6 +48,19 @@ m2x_open(key, &ctx);
 
 Notice there's no need to create the context object on the heap, dynamically memory allocation is not a requirement here.
 
+## SSL support
+
+By default, this library implements SSL support via [OpenSSL](https://www.openssl.org/). However, you can also disable the SSL support completely:
+
+```
+$ make SSL=false
+$ make examples SSL=false
+```
+
+It is also possible to build with SSL support, but turn it off for the current request. Just set `use_ssl` in `m2x_context` will do the trick.
+
+For SSL connections, the default port used is `8883`, while non-SSL connections use `1883` port.
+
 ## Calling API functions
 
 All API functions will have the following type of signature:

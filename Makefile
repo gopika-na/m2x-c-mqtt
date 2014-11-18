@@ -1,6 +1,13 @@
+SSL=true
+ifeq ($(SSL),true)
+	SSL_FILE=openssl.o
+	SSL_CFLAGS=-Wno-deprecated-declarations -DHAS_SSL
+	SSL_LDFLAGS=-lssl -lcrypto
+endif
+
 BUILD_DIR=build
 M2X_LIB=$(BUILD_DIR)/m2x.a
-OBJS=$(addprefix $(BUILD_DIR)/, m2x.o client.o json_frozen.o utility.o response.o device.o distribution.o key.o chart.o)
+OBJS=$(addprefix $(BUILD_DIR)/, m2x.o client.o json_frozen.o utility.o response.o device.o distribution.o key.o chart.o $(SSL_FILE))
 
 PAHO_PATH=vendor/paho
 PAHO_BUILD_DIR=$(BUILD_DIR)/paho
@@ -13,8 +20,8 @@ PAHO_PACKET_OBJS=$(patsubst $(PAHO_PACKET_PATH)/%.c, $(PAHO_BUILD_DIR)/%.o, $(PA
 
 AR=ar
 CC=gcc
-CFLAGS=-O3 -g -Wall -Wextra -std=gnu99 -Wno-unused-parameter -Wno-unused-variable -Wno-comment -I $(PAHO_PACKET_PATH) -I $(PAHO_HOST_PATH) -I $(PAHO_BUILD_DIR)
-LDFLAGS=
+CFLAGS=-O3 -g -Wall -Wextra -std=gnu99 -Wno-unused-parameter -Wno-unused-variable -Wno-comment -I $(PAHO_PACKET_PATH) -I $(PAHO_HOST_PATH) -I $(PAHO_BUILD_DIR) $(SSL_CFLAGS)
+LDFLAGS=$(SSL_LDFLAGS)
 
 $(M2X_LIB): $(OBJS) $(BUILD_DIR)/frozen.o $(PAHO_PACKET_OBJS) $(PAHO_BUILD_DIR)/MQTTClient.o $(PAHO_BUILD_DIR)/$(PAHO_HOST_NAME).o
 	$(AR) -rcs $@ $^

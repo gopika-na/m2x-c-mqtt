@@ -1,3 +1,10 @@
+SSL=true
+ifeq ($(SSL),true)
+	SSL_FILE=openssl.o
+	SSL_CFLAGS=-Wno-deprecated-declarations -DHAS_SSL
+	SSL_LDFLAGS=-lssl -lcrypto
+endif
+
 BUILD_DIR=../build
 EXAMPLES_BUILD_DIR=$(BUILD_DIR)/examples
 M2X_LIB=$(BUILD_DIR)/m2x.a
@@ -11,13 +18,13 @@ PAHO_CLIENT_PATH=$(PAHO_PATH)/MQTTClient-C/src
 PAHO_HOST_PATH=$(PAHO_CLIENT_PATH)/linux
 
 CC=gcc
-CFLAGS=-O3 -g -Wall -Wextra -std=gnu99 -Wno-unused-parameter -Wno-unused-variable -Wno-comment -I.. -I $(PAHO_PACKET_PATH) -I $(PAHO_HOST_PATH) -I $(PAHO_BUILD_DIR)
-LDFLAGS=-lcurl
+CFLAGS=-O3 -g -Wall -Wextra -std=gnu99 -Wno-unused-parameter -Wno-unused-variable -Wno-comment -I.. -I $(PAHO_PACKET_PATH) -I $(PAHO_HOST_PATH) -I $(PAHO_BUILD_DIR) $(SSL_CFLAGS)
+LDFLAGS=$(SSL_LDFLAGS)
 
 all: $(BINS)
 
 $(EXAMPLES_BUILD_DIR)/%: $(EXAMPLES_BUILD_DIR)/%.o $(M2X_LIB)
-	$(CC) -o $@ $(LDFLAGS) $^
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 $(EXAMPLES_BUILD_DIR)/%.o: %.c
 	$(CC) -o $@ $(CFLAGS) -c $<
