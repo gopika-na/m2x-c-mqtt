@@ -4,12 +4,12 @@ int openssl_mqttread(Network *n, unsigned char *buffer, int len, int timeout_ms)
 {
   OpenSSLNetwork *ssl_network = (OpenSSLNetwork *) n;
   int bytes, rc;
-	struct timeval interval = {timeout_ms / 1000, (timeout_ms % 1000) * 1000};
-	if (interval.tv_sec < 0 || (interval.tv_sec == 0 && interval.tv_usec <= 0)) {
-		interval.tv_sec = 0;
-		interval.tv_usec = 100;
-	}
-	setsockopt(ssl_network->socket, SOL_SOCKET, SO_RCVTIMEO, (char *)&interval, sizeof(struct timeval));
+  struct timeval interval = {timeout_ms / 1000, (timeout_ms % 1000) * 1000};
+  if (interval.tv_sec < 0 || (interval.tv_sec == 0 && interval.tv_usec <= 0)) {
+    interval.tv_sec = 0;
+    interval.tv_usec = 100;
+  }
+  setsockopt(ssl_network->socket, SOL_SOCKET, SO_RCVTIMEO, (char *)&interval, sizeof(struct timeval));
 
   bytes = 0;
   while (bytes < len) {
@@ -28,12 +28,12 @@ int openssl_mqttread(Network *n, unsigned char *buffer, int len, int timeout_ms)
 int openssl_mqttwrite(Network *n, unsigned char *buffer, int len, int timeout_ms)
 {
   OpenSSLNetwork *ssl_network = (OpenSSLNetwork *) n;
-	struct timeval interval = {timeout_ms / 1000, (timeout_ms % 1000) * 1000};
-	if (interval.tv_sec < 0 || (interval.tv_sec == 0 && interval.tv_usec <= 0)) {
-		interval.tv_sec = 0;
-		interval.tv_usec = 100;
-	}
-	setsockopt(ssl_network->socket, SOL_SOCKET, SO_SNDTIMEO, (char *)&interval, sizeof(struct timeval));
+  struct timeval interval = {timeout_ms / 1000, (timeout_ms % 1000) * 1000};
+  if (interval.tv_sec < 0 || (interval.tv_sec == 0 && interval.tv_usec <= 0)) {
+    interval.tv_sec = 0;
+    interval.tv_usec = 100;
+  }
+  setsockopt(ssl_network->socket, SOL_SOCKET, SO_SNDTIMEO, (char *)&interval, sizeof(struct timeval));
   return SSL_write(ssl_network->handle, buffer, len);
 }
 
@@ -67,11 +67,11 @@ void NewOpenSSLNetwork(OpenSSLNetwork *n)
 
 int ConnectOpenSSLNetwork(OpenSSLNetwork *n, char *addr, int port)
 {
-	struct sockaddr_in address;
-	int rc = -1;
-	sa_family_t family;
-	struct addrinfo *result = NULL;
-	struct addrinfo hints = {0, AF_UNSPEC, SOCK_STREAM, IPPROTO_TCP, 0, NULL, NULL, NULL};
+  struct sockaddr_in address;
+  int rc = -1;
+  sa_family_t family;
+  struct addrinfo *result = NULL;
+  struct addrinfo hints = {0, AF_UNSPEC, SOCK_STREAM, IPPROTO_TCP, 0, NULL, NULL, NULL};
   struct addrinfo *res = NULL;
   if ((rc = getaddrinfo(addr, NULL, &hints, &result)) == 0) {
     res = result;
