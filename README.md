@@ -1,8 +1,9 @@
 C (MQTT) M2X API Client
 =========================
 
-The [AT&T M2X](https://m2x.att.com/) API provides all the needed operations and methods to connect your devices to AT&T's M2X service. This client provides an easy to use interface for your favorite language, [C](http://www.open-std.org/jtc1/sc22/wg14/) using the [MQTT](http://mqtt.org) protocol to connect with M2X. 
+[AT&T M2X](http://m2x.att.com) is a cloud-based fully managed time-series data storage service for network connected machine-to-machine (M2M) devices and the Internet of Things (IoT). 
 
+The [AT&T M2X API](https://m2x.att.com/developer/documentation/v2/overview) provides all the needed operations and methods to connect your devices to AT&T's M2X service. This library aims to provide a simple wrapper to interact with the AT&T M2X API for [C](http://www.open-std.org/jtc1/sc22/wg14/) using the [MQTT](http://mqtt.org) protocol. Refer to the [Glossary of Terms](https://m2x.att.com/developer/documentation/v2/glossary) to understand the nomenclature used throughout this documentation.
 
 Getting Started
 ===============
