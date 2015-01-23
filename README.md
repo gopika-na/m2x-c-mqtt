@@ -9,9 +9,9 @@ Getting Started
 1. Signup for an M2X Account: https://m2x.att.com/signup
 2. Obtain your *Master Key* from the Master Keys tab of your Account Settings: https://m2x.att.com/account
 3. Create your first Device and copy its *Device ID*: https://m2x.att.com/devices
-4. Review the M2X API Documentation: https://m2x.att.com/developer/documentation/overview
+4. Review the M2X API Documentation: https://m2x.att.com/developer/documentation/v2/overview
 
-If you have questions about any M2X specific terms, please consult the M2X glossary: https://m2x.att.com/developer/documentation/glossary
+If you have questions about any M2X specific terms, please consult the M2X glossary: https://m2x.att.com/developer/documentation/v2/glossary
 
 
 Setup
@@ -69,7 +69,7 @@ All API functions will have the following type of signature:
 m2x_response m2x_some_api_function(m2x_context *ctx, const char *arg1, const char *arg2, ...);
 ```
 
-Notice that this library wraps the MQTT communications completely: you don't need to do the MQTT connection manually, the library will take care of that for you. All you need to do is calling the correct functions.
+Notice that this library wraps the MQTT communications completely: you don't need to do the MQTT connection manually, the library will take care of that for you. All you need to do is call the correct functions.
 
 Depending the exact function in use, different number of arguments may be present. For example, below is a function used to list stream values of a device:
 
@@ -83,14 +83,13 @@ It requires the context object, device ID, stream name and a query string. The q
 max=100&limit=10
 ```
 
-We will talk about `m2x_response` in the next session.
+We will talk about `m2x_response` in the next section.
 
 Notice that there is no need to connect to MQTT broker before calling the API functions. The library will check if a connection is available first, and connect if necessary. By default, the connection will also be closed once the API request is fulfilled, however, there's another mode that will keep an MQTT connection open. We will talk about it later.
 
 ## Response object
 
-All API functions will return an `m2x_response` object. This object contai
-ns the status code, raw response as well as JSON-parsed response. The type of this object is as follows:
+All API functions will return an `m2x_response` object. This object contains the status code, raw response as well as JSON-parsed response. The type of this object is as follows:
 
 ```
 typedef struct m2x_response {
@@ -103,7 +102,9 @@ typedef struct m2x_response {
 } m2x_response;
 ```
 
-`status` field contains the same status code as those you can see in an HTTP request. `raw` contains the raw reply from the MQTT server(not necessarily NULL-terminated), while `data` contains the reply from our JSON parser.
+* `status` contains the same status code as those you can see in an HTTP request
+* `raw` contains the raw reply from the MQTT server(not necessarily NULL-terminated)
+* `data` contains the reply from our JSON parser
 
 Though we use [frozen](https://github.com/cesanta/frozen) as the library to parse JSON, we shall see later that it is even possible to plug-in another JSON parsing library of your choice. This is the reason that `data` has type `void *`: you can store anything you want here and cast it to the actual type later.
 
@@ -141,7 +142,7 @@ if (m2x_is_success(&response)) {
 m2x_release_response(&ctx, &response);
 ```
 
-FYI, here's a sample reply that the code piece listed here is handling:
+Below is a sample reply that the code piece above is handling:
 
 ```
 {
@@ -199,7 +200,7 @@ Otherwise, the connection will be lost at certain time, and errors will occur.
 
 ## JSON
 
-By default, we use [frozen](https://github.com/cesanta/frozen), but you can also plug-in your favourite JSON parser to handle the requests. All you need to do is to implement this function:
+By default, we use [frozen](https://github.com/cesanta/frozen), but you can also plug-in your favourite JSON parser to handle the requests. All you need to do is implement this function:
 
 ```
 typedef struct m2x_json_result {
@@ -227,7 +228,7 @@ If the answers to both questions here are yes, we have a valid response here, yo
 
 After you implement this function, you can set it to the `json_parser` field in `m2x_context` object, the library will then use your specified JSON parser to parse the result!
 
-By default, we expect the `data` pointer is pointed to a piece of memory allocated using `malloc`, and that we can use `free` to release the memory. In fact, this is also the only place in the library that uses dynamic memory allocation. However, if your JSON parser is working in another way(for example, if you use static memory, or use multiple malloc), you can implement the function used to release memory:
+By default, we expect the `data` pointer is pointed to a piece of memory allocated using `malloc`, and that we can use `free` to release the memory. In fact, this is also the only place in the library that uses dynamic memory allocation. However, if your JSON parser is working in another way (for example, if you use static memory, or use multiple malloc), you can implement the function used to release memory:
 
 ```
 typedef void (*m2x_json_releaser) (void *);
