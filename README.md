@@ -3,16 +3,16 @@ C (MQTT) M2X API Client
 
 [AT&T M2X](http://m2x.att.com) is a cloud-based fully managed time-series data storage service for network connected machine-to-machine (M2M) devices and the Internet of Things (IoT). 
 
-The [AT&T M2X API](https://m2x.att.com/developer/documentation/v2/overview) provides all the needed operations and methods to connect your devices to AT&T's M2X service. This library aims to provide a simple wrapper to interact with the AT&T M2X API for [C](http://www.open-std.org/jtc1/sc22/wg14/) using the [MQTT](http://mqtt.org) protocol. Refer to the [Glossary of Terms](https://m2x.att.com/developer/documentation/v2/glossary) to understand the nomenclature used throughout this documentation.
+The [AT&T M2X API](https://m2x.att.com/developer/documentation/overview) provides all the needed operations and methods to connect your devices to AT&T's M2X service. This library aims to provide a simple wrapper to interact with the AT&T M2X API for [C](http://www.open-std.org/jtc1/sc22/wg14/) using the [MQTT](http://mqtt.org) protocol. Refer to the [Glossary of Terms](https://m2x.att.com/developer/documentation/glossary) to understand the nomenclature used throughout this documentation.
 
 Getting Started
 ===============
 1. Signup for an M2X Account: https://m2x.att.com/signup
 2. Obtain your *Master Key* from the Master Keys tab of your Account Settings: https://m2x.att.com/account
 3. Create your first Device and copy its *Device ID*: https://m2x.att.com/devices
-4. Review the M2X API Documentation: https://m2x.att.com/developer/documentation/v2/overview
+4. Review the M2X API Documentation: https://m2x.att.com/developer/documentation/overview
 
-If you have questions about any M2X specific terms, please consult the M2X glossary: https://m2x.att.com/developer/documentation/v2/glossary
+If you have questions about any M2X specific terms, please consult the M2X glossary: https://m2x.att.com/developer/documentation/glossary
 
 
 Setup
@@ -157,7 +157,7 @@ Below is a sample reply that the code piece above is handling:
     "devices": [
       {
         "id": "059c21d01876a31c8a85db65a8dad9c8",
-        "url": "http://api-m2x.att.com//v2/devices/059c21d01876a31c8a85db65a8dad9c8",
+        "url": "http://api-m2x.att.com/v2/devices/059c21d01876a31c8a85db65a8dad9c8",
         "name": "API Batch",
         "status": "enabled",
         "serial": "ABC1234",
