@@ -10,7 +10,7 @@ extern "C" {
 
 m2x_response m2x_device_catalog(m2x_context *ctx, const char *query);
 m2x_response m2x_device_list(m2x_context *ctx, const char *query);
-m2x_response m2x_device_groups(m2x_context *ctx);
+m2x_response m2x_device_tags(m2x_context *ctx);
 m2x_response m2x_device_create(m2x_context *ctx, const char *data);
 m2x_response m2x_device_update(m2x_context *ctx, const char *id, const char *data);
 m2x_response m2x_device_delete(m2x_context *ctx, const char *id);

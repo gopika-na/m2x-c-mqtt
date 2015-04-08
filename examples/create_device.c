@@ -9,7 +9,7 @@ const char *M2X_KEY="";
 const char *name = "";
 const char *description = "";
 const char *visibility = "";
-const char *groups = "";
+const char *tags = "";
 
 void print_token_as_string(const char *prefix, struct json_token *tok)
 {
@@ -34,7 +34,7 @@ int main()
             "name", name,
             "description", description,
             "visibility", visibility,
-            "groups", groups);
+            "tags", tags);
   m2x_open(M2X_KEY, &ctx);
   response = m2x_device_create(&ctx, buffer);
   printf("Response Status Code: %d\n", response.status);
@@ -45,7 +45,7 @@ int main()
     print_token_as_string("Device Description: ",
                           find_json_token(arr, "body.description"));
     print_token_as_string("Device Visibility: ", find_json_token(arr, "body.visibility"));
-    print_token_as_string("Device Groups: ", find_json_token(arr, "body.groups"));
+    print_token_as_string("Device Tags: ", find_json_token(arr, "body.tags"));
   }
   m2x_release_response(&ctx, &response);
   m2x_close(&ctx);

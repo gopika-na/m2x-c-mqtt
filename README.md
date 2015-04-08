@@ -161,7 +161,7 @@ Below is a sample reply that the code piece above is handling:
         "name": "API Batch",
         "status": "enabled",
         "serial": "ABC1234",
-        "groups": null,
+        "tags": [],
         "location": {
           "name": "room",
           "latitude": 10,

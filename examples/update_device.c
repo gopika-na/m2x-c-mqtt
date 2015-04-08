@@ -10,7 +10,7 @@ const char *device_id = "";
 const char *name = "";
 const char *description = "";
 const char *visibility = "";
-const char *groups = "";
+const char *tags = "";
 
 int main()
 {
@@ -23,7 +23,7 @@ int main()
             "name", name,
             "description", description,
             "visibility", visibility,
-            "groups", groups);
+            "tags", tags);
   m2x_open(M2X_KEY, &ctx);
   response = m2x_device_update(&ctx, device_id, buffer);
   printf("Response Status Code: %d\n", response.status);
