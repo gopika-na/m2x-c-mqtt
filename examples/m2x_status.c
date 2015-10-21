@@ -24,12 +24,6 @@ int main()
       fwrite(tok->ptr, sizeof(char), tok->len, stdout);
       printf("\n");
     }
-    tok = find_json_token(arr, "body.triggers");
-    if (tok != NULL) {
-      printf("Triggers Status: ");
-      fwrite(tok->ptr, sizeof(char), tok->len, stdout);
-      printf("\n");
-    }
   }
   m2x_release_response(&ctx, &response);
   m2x_close(&ctx);
