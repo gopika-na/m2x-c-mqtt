@@ -6,7 +6,7 @@
 #include "m2x.h"
 #include "utility.h"
 
-extern void message_arrived_callback(MessageData* md);
+extern void response_arrived_callback(MessageData* md);
 
 /* Default releaser that uses free() */
 static void free_releaser(void *p)
@@ -93,7 +93,7 @@ int m2x_mqtt_connect(m2x_context *ctx)
     return rc;
   }
 
-  rc = MQTTSubscribe(client, ctx->sub_channel, 2, message_arrived_callback);
+  rc = MQTTSubscribe(client, ctx->sub_channel, 2, response_arrived_callback);
   if (rc != 0) {
     MQTTDisconnect(client);
     network->disconnect(network);
