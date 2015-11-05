@@ -4,13 +4,17 @@
 #include "json_frozen.h"
 #include "vendor/frozen/frozen.h"
 
+void *m2x_generic_parse_with_frozen(const char *str, int length) {
+  return parse_json2(str, length);
+}
+
 m2x_json_status m2x_parse_with_frozen(const char *str, int length,
                                       const char *id_str, int id_length,
                                       m2x_json_result *result) {
   struct json_token *arr, *tok;
   int status, i, minus;
 
-  arr = parse_json2(str, length);
+  arr = m2x_generic_parse_with_frozen(str, length);
   if (arr == NULL) {
     return M2X_JSON_INVALID;
   }

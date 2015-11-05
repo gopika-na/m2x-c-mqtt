@@ -21,6 +21,7 @@ void m2x_open(const char *key, m2x_context *ctx)
   ctx->verbose = 0;
   ctx->keepalive = 0;
   ctx->json_parser = m2x_parse_with_frozen;
+  ctx->json_generic_parser = m2x_generic_parse_with_frozen;
   ctx->json_releaser = free_releaser;
   /* Use SSL by default if at all possible */
 #ifdef HAS_SSL

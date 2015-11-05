@@ -42,6 +42,7 @@ typedef struct m2x_context {
   int verbose;
   int keepalive;
   m2x_json_parser json_parser;
+  m2x_json_generic_parser json_generic_parser;
   m2x_json_releaser json_releaser;
 #ifdef HAS_SSL
   int use_ssl;
