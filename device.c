@@ -79,13 +79,13 @@ m2x_response m2x_device_list_stream_values(m2x_context *ctx, const char *id, con
 m2x_response m2x_device_stream_sampling(m2x_context *ctx, const char *id, const char *name, const char *query)
 {
   const char *args[7] = {query, "/devices/", id, "/streams/", name, "/sampling.json", NULL};
-  return m2x_client_get(ctx, interleave_path_and_param_fill, args);
+  return m2x_client_get(ctx, query_with_interleave_fill, args);
 }
 
 m2x_response m2x_device_stream_stats(m2x_context *ctx, const char *id, const char *name, const char *query)
 {
   const char *args[7] = {query, "/devices/", id, "/streams/", name, "/stats", NULL};
-  return m2x_client_get(ctx, interleave_path_and_param_fill, args);
+  return m2x_client_get(ctx, query_with_interleave_fill, args);
 }
 
 m2x_response m2x_device_post_stream_value(m2x_context *ctx, const char *id, const char *name, const char *data)
