@@ -123,3 +123,27 @@ m2x_response m2x_device_delete(m2x_context *ctx, const char *id)
   const char *args[3] = {"/devices/", id, NULL};
   return m2x_client_delete(ctx, interleave_path_and_param_fill, args, NULL);
 }
+
+m2x_response m2x_device_commands(m2x_context *ctx, const char *id, const char *query)
+{
+  const char *args[5] = {query, "/devices/", id, "/commands", NULL};
+  return m2x_client_get(ctx, query_with_interleave_fill, args);
+}
+
+m2x_response m2x_device_view_command(m2x_context *ctx, const char *id, const char *command_id)
+{
+  const char *args[5] = {"/devices/", id, "/commands/", command_id, NULL};
+  return m2x_client_get(ctx, interleave_path_and_param_fill, args);
+}
+
+m2x_response m2x_device_process_command(m2x_context *ctx, const char *id, const char *command_id, const char *data)
+{
+  const char *args[6] = {"/devices/", id, "/commands/", command_id, "/process", NULL};
+  return m2x_client_post(ctx, interleave_path_and_param_fill, args, data);
+}
+
+m2x_response m2x_device_reject_command(m2x_context *ctx, const char *id, const char *command_id, const char *data)
+{
+  const char *args[6] = {"/devices/", id, "/commands/", command_id, "/reject", NULL};
+  return m2x_client_post(ctx, interleave_path_and_param_fill, args, data);
+}

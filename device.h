@@ -33,6 +33,11 @@ m2x_response m2x_device_delete_stream_value(m2x_context *ctx, const char *id, co
 m2x_response m2x_device_delete_stream(m2x_context *ctx, const char *id, const char *name);
 m2x_response m2x_device_post_updates(m2x_context *ctx, const char *id, const char *data);
 
+m2x_response m2x_device_commands(m2x_context *ctx, const char *id, const char *query);
+m2x_response m2x_device_view_command(m2x_context *ctx, const char *id, const char *command_id);
+m2x_response m2x_device_process_command(m2x_context *ctx, const char *id, const char *command_id, const char *data);
+m2x_response m2x_device_reject_command(m2x_context *ctx, const char *id, const char *command_id, const char *data);
+
 #if defined(__cplusplus)
 }  /* extern "C" { */
 #endif
