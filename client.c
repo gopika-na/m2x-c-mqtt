@@ -13,9 +13,9 @@ int g_got_message = 0;
 /* TODO: When we have context structs, we can move this function to
  * m2x.c
  */
-void message_arrived_callback(MessageData* md)
+void response_arrived_callback(MessageData* md)
 {
-	MQTTMessage* message = md->message;
+  MQTTMessage* message = md->message;
   m2x_json_result result;
   int s = g_message_ctx->json_parser(message->payload, message->payloadlen,
                                      g_message_id, M2X_MESSAGE_ID_LEN, &result);
