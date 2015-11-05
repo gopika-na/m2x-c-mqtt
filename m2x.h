@@ -30,6 +30,10 @@ extern "C" {
 #define M2X_SSL_PORT 8883
 #endif  /* HAS_SSL */
 
+struct m2x_context;
+
+typedef void (*m2x_command_handler) (struct m2x_context *, void *);
+
 typedef struct m2x_context {
   /* Buffers used to communicate with paho API, notice all buffers here
    * are NULL-terminated
@@ -46,6 +50,7 @@ typedef struct m2x_context {
   m2x_json_parser json_parser;
   m2x_json_generic_parser json_generic_parser;
   m2x_json_releaser json_releaser;
+  m2x_command_handler command_handler;
 #ifdef HAS_SSL
   int use_ssl;
 #endif  /* HAS_SSL */

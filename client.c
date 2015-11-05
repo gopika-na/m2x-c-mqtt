@@ -28,6 +28,24 @@ void response_arrived_callback(MessageData* md)
   }
 }
 
+/* TODO: When we have context structs, we can move this function to
+ * m2x.c
+ */
+void command_arrived_callback(MessageData* md)
+{
+  MQTTMessage* message = md->message;
+  void *result = NULL;
+
+  result = g_message_ctx->json_generic_parser(message->payload, message->payloadlen);
+
+  if (!result || !g_message_ctx->command_handler)
+    return;
+
+  g_message_ctx->command_handler(g_message_ctx, result);
+
+  g_message_ctx->json_releaser(result);
+}
+
 int publish_mqtt_message(m2x_context *ctx, const char *id, const char *method,
                          path_filling_function f, const char *args[],
                          const char *body)

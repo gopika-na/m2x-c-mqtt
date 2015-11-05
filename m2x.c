@@ -7,6 +7,7 @@
 #include "utility.h"
 
 extern void response_arrived_callback(MessageData* md);
+extern void command_arrived_callback(MessageData* md);
 
 /* Default releaser that uses free() */
 static void free_releaser(void *p)
@@ -23,6 +24,7 @@ void m2x_open(const char *key, m2x_context *ctx)
   ctx->json_parser = m2x_parse_with_frozen;
   ctx->json_generic_parser = m2x_generic_parse_with_frozen;
   ctx->json_releaser = free_releaser;
+  ctx->command_handler = NULL;
   /* Use SSL by default if at all possible */
 #ifdef HAS_SSL
   ctx->use_ssl = 1;
@@ -99,6 +101,15 @@ int m2x_mqtt_connect(m2x_context *ctx)
     MQTTDisconnect(client);
     network->disconnect(network);
     return rc;
+  }
+
+  if (ctx->command_handler) {
+    rc = MQTTSubscribe(client, ctx->commands_channel, 2, command_arrived_callback);
+    if (rc != 0) {
+      MQTTDisconnect(client);
+      network->disconnect(network);
+      return rc;
+    }
   }
   return rc;
 }
