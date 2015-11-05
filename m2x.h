@@ -24,6 +24,7 @@ extern "C" {
 #define M2X_KEY_MAX_LENGTH 32
 #define M2X_PUBLISH_CHANNEL_LENGTH (M2X_KEY_MAX_LENGTH + 13)
 #define M2X_SUBSCRIBE_CHANNEL_LENGTH (M2X_KEY_MAX_LENGTH + 14)
+#define M2X_COMMANDS_CHANNEL_LENGTH (M2X_KEY_MAX_LENGTH + 13)
 
 #ifdef HAS_SSL
 #define M2X_SSL_PORT 8883
@@ -35,6 +36,7 @@ typedef struct m2x_context {
    */
   char pub_channel[M2X_PUBLISH_CHANNEL_LENGTH + 1];
   char sub_channel[M2X_SUBSCRIBE_CHANNEL_LENGTH + 1];
+  char commands_channel[M2X_COMMANDS_CHANNEL_LENGTH + 1];
   char key[M2X_KEY_MAX_LENGTH + 1];
   char assemble_buffer[M2X_BUFFER_LENGTH + 1];
 

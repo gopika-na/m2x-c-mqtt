@@ -31,6 +31,7 @@ void m2x_open(const char *key, m2x_context *ctx)
   strcpy(ctx->key, key);
   sprintf(ctx->pub_channel, "m2x/%s/requests", key);
   sprintf(ctx->sub_channel, "m2x/%s/responses", key);
+  sprintf(ctx->commands_channel, "m2x/%s/commands", key);
 }
 
 void m2x_close(m2x_context *ctx)
