@@ -40,10 +40,8 @@ void command_arrived_callback(MessageData* md)
 
   command = m2x_alloc_command(g_message_ctx, message->payload,
                                              message->payloadlen);
-  if (!command) {
-    g_message_ctx->commands_overflow = 1;
+  if (!command)
     return;
-  }
 
   int s = g_message_ctx->json_command_parser(command->raw, command->raw_length,
                                              &json_command);

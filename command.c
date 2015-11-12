@@ -19,6 +19,8 @@ m2x_command *m2x_alloc_command(m2x_context *ctx, const char *raw,
   if (command) {
     memcpy(command->raw, raw, raw_length);
     command->raw_length = raw_length;
+  } else {
+    ctx->commands_overflow = 1;
   }
 
   return command;
@@ -29,6 +31,8 @@ m2x_command *m2x_alloc_command(m2x_context *ctx, const char *raw,
  */
 void m2x_release_command(m2x_context *ctx, m2x_command *command)
 {
+  ctx->commands_overflow = 0;
+
   if (command->json) {
     ctx->json_releaser(command->json);
     command->json = NULL;
