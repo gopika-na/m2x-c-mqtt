@@ -2,6 +2,7 @@
 
 #include "m2x.h"
 #include "client.h"
+#include "command.h"
 #include "utility.h"
 
 /* TODO: Move these into context structs once we heard from paho-dev */
@@ -26,6 +27,38 @@ void response_arrived_callback(MessageData* md)
     g_message_response.raw_length = message->payloadlen;
     g_got_message = 1;
   }
+}
+
+/* TODO: When we have context structs, we can move this function to
+ * m2x.c
+ */
+void command_arrived_callback(MessageData* md)
+{
+  MQTTMessage* message = md->message;
+  m2x_json_command json_command;
+  m2x_command* command;
+
+  command = m2x_alloc_command(g_message_ctx, message->payload,
+                                             message->payloadlen);
+  if (!command) {
+    g_message_ctx->commands_overflow = 1;
+    return;
+  }
+
+  int s = g_message_ctx->json_command_parser(command->raw, command->raw_length,
+                                             &json_command);
+  if (s != M2X_JSON_OK) {
+    m2x_release_command(g_message_ctx, command);
+    return;
+  }
+
+  command->id_ptr = json_command.id_ptr;
+  command->id_length = json_command.id_length;
+  command->sent_at_ptr = json_command.sent_at_ptr;
+  command->sent_at_length = json_command.sent_at_length;
+  command->json = json_command.json;
+
+  m2x_insert_command(g_message_ctx, command);
 }
 
 int publish_mqtt_message(m2x_context *ctx, const char *id, const char *method,

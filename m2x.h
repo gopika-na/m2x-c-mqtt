@@ -17,6 +17,8 @@ extern "C" {
  * smaller buffer.
  */
 #define M2X_BUFFER_LENGTH 8192
+#define M2X_COMMAND_BUFFER_LENGTH 2048
+#define M2X_COMMAND_QUEUE_LENGTH 100
 #define M2X_TIMEOUT_MS 1000
 #define M2X_MESSAGE_ID_LEN 32
 #define M2X_HOST "api-m2x.att.com"
@@ -45,10 +47,14 @@ typedef struct m2x_context {
   int verbose;
   int keepalive;
   m2x_json_parser json_parser;
+  m2x_json_command_parser json_command_parser;
   m2x_json_releaser json_releaser;
 #ifdef HAS_SSL
   int use_ssl;
 #endif  /* HAS_SSL */
+
+  /* Current status flags */
+  int commands_overflow; /* nonzero when received commands have been dropped */
 
   /* Paho API part */
   union {

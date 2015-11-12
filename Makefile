@@ -7,7 +7,7 @@ endif
 
 BUILD_DIR=build
 M2X_LIB=$(BUILD_DIR)/m2x.a
-OBJS=$(addprefix $(BUILD_DIR)/, m2x.o client.o json_frozen.o utility.o cmdq.o response.o device.o distribution.o key.o chart.o $(SSL_FILE))
+OBJS=$(addprefix $(BUILD_DIR)/, m2x.o client.o json_frozen.o utility.o cmdq.o command.o response.o device.o distribution.o key.o chart.o $(SSL_FILE))
 
 PAHO_PATH=vendor/paho
 PAHO_BUILD_DIR=$(BUILD_DIR)/paho
