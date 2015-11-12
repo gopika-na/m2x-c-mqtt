@@ -73,3 +73,35 @@ void m2x_insert_command(m2x_context *ctx, m2x_command *command)
   cmdq_ins_after(&g_cmdq, node, other);
   return;
 }
+
+/* Pop an m2x_command struct from the commands queue, or NULL if it is empty.
+ * Commands will be popped in sorted order, with the oldest ones popped first.
+ * The m2x_command struct should be freed with m2x_release_command when done.
+ */
+static m2x_command *s_m2x_command_pop(m2x_context *ctx)
+{
+  cmdq_node_t *node = g_cmdq.head;
+  cmdq_pop(&g_cmdq, node);
+  return (m2x_command *) node;
+}
+
+/* Get the next command to process, starting with the oldest, or NULL if none.
+ * The command id should be marked as rejected or processed using the API,
+ * then the m2x_command should be freed using the m2x_release_command function.
+ */
+m2x_command *m2x_next_command(m2x_context *ctx)
+{
+  m2x_command *command;
+
+  command = s_m2x_command_pop(ctx);
+  if (command)
+    return command;
+
+  m2x_mqtt_yield_nonblock(ctx);
+
+  command = s_m2x_command_pop(ctx);
+  if (command)
+    return command;
+
+  return NULL;
+}

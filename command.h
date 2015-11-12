@@ -24,6 +24,7 @@ m2x_command *m2x_alloc_command(m2x_context *ctx, const char *raw,
                                                  int raw_length);
 void m2x_release_command(m2x_context *ctx, m2x_command *command);
 void m2x_insert_command(m2x_context *ctx, m2x_command *command);
+m2x_command *m2x_next_command(m2x_context *ctx);
 
 #if defined(__cplusplus)
 }  /* extern "C" { */
