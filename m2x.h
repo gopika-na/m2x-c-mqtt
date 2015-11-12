@@ -75,6 +75,7 @@ int m2x_mqtt_is_connected(m2x_context *ctx);
 int m2x_mqtt_connect(m2x_context *ctx);
 void m2x_mqtt_disconnect(m2x_context *ctx);
 int m2x_mqtt_yield(m2x_context *ctx);
+int m2x_mqtt_yield_nonblock(m2x_context *ctx);
 
 #if defined(__cplusplus)
 }  /* extern "C" { */

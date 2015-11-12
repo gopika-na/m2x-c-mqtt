@@ -153,3 +153,17 @@ int m2x_mqtt_yield(m2x_context *ctx) {
   }
   return rc;
 }
+
+int m2x_mqtt_yield_nonblock(m2x_context *ctx) {
+  Client *client = &(ctx->client);
+  int rc;
+  if (!m2x_mqtt_is_connected(ctx)) {
+    return 0;
+  }
+  g_message_ctx = ctx; /* Set so that any callbacks have the right context. */
+  rc = MQTTYield(client, 1);
+  if (rc != 0) {
+    m2x_mqtt_disconnect(ctx);
+  }
+  return rc;
+}
