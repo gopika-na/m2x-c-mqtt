@@ -11,8 +11,8 @@ cmdq_t g_cmdq;
  * If there is no more room in the fixed buffer, NULL will be returned.
  * The m2x_command will not yet be inserted in the commands queue.
  */
-m2x_command *m2x_alloc_command(m2x_context *ctx, const char *raw,
-                                                 int raw_length)
+m2x_command *s_m2x_alloc_command(m2x_context *ctx, const char *raw,
+                                                   int raw_length)
 {
   m2x_command *command = (m2x_command *) cmdq_node_alloc(&g_cmdq);
 
@@ -22,6 +22,37 @@ m2x_command *m2x_alloc_command(m2x_context *ctx, const char *raw,
   } else {
     ctx->commands_overflow = 1;
   }
+
+  return command;
+}
+
+/* Return a new m2x_command, filled by copying and parsing the given raw data.
+ * The memory is not dynamically allocated, but pulled from a fixed buffer.
+ * If there is no more room in the fixed buffer, NULL will be returned.
+ * The m2x_command will not yet be inserted in the commands queue.
+ */
+m2x_command *m2x_create_command(m2x_context *ctx, const char *raw,
+                                                  int raw_length)
+{
+  m2x_json_command json_command;
+  m2x_command* command;
+
+  command = s_m2x_alloc_command(ctx, raw, raw_length);
+  if (!command)
+    return NULL;
+
+  int s = ctx->json_command_parser(command->raw, command->raw_length,
+                                   &json_command);
+  if (s != M2X_JSON_OK) {
+    m2x_release_command(ctx, command);
+    return NULL;
+  }
+
+  command->id_ptr = json_command.id_ptr;
+  command->id_length = json_command.id_length;
+  command->sent_at_ptr = json_command.sent_at_ptr;
+  command->sent_at_length = json_command.sent_at_length;
+  command->json = json_command.json;
 
   return command;
 }
