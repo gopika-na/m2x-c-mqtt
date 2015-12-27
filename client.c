@@ -2,6 +2,7 @@
 
 #include "m2x.h"
 #include "client.h"
+#include "command.h"
 #include "utility.h"
 
 /* TODO: Move these into context structs once we heard from paho-dev */
@@ -13,9 +14,9 @@ int g_got_message = 0;
 /* TODO: When we have context structs, we can move this function to
  * m2x.c
  */
-void message_arrived_callback(MessageData* md)
+void response_arrived_callback(MessageData* md)
 {
-	MQTTMessage* message = md->message;
+  MQTTMessage* message = md->message;
   m2x_json_result result;
   int s = g_message_ctx->json_parser(message->payload, message->payloadlen,
                                      g_message_id, M2X_MESSAGE_ID_LEN, &result);
@@ -26,6 +27,20 @@ void message_arrived_callback(MessageData* md)
     g_message_response.raw_length = message->payloadlen;
     g_got_message = 1;
   }
+}
+
+/* TODO: When we have context structs, we can move this function to
+ * m2x.c
+ */
+void command_arrived_callback(MessageData* md)
+{
+  MQTTMessage* message = md->message;
+  m2x_command* command;
+
+  command = m2x_create_command(g_message_ctx, message->payload,
+                                              message->payloadlen);
+  if (command)
+    m2x_insert_command(g_message_ctx, command);
 }
 
 int publish_mqtt_message(m2x_context *ctx, const char *id, const char *method,

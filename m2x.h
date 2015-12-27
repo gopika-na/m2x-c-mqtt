@@ -17,13 +17,17 @@ extern "C" {
  * smaller buffer.
  */
 #define M2X_BUFFER_LENGTH 8192
+#define M2X_COMMAND_BUFFER_LENGTH 2048
+#define M2X_COMMAND_QUEUE_LENGTH 100
 #define M2X_TIMEOUT_MS 1000
 #define M2X_MESSAGE_ID_LEN 32
 #define M2X_HOST "api-m2x.att.com"
 #define M2X_PORT 1883
 #define M2X_KEY_MAX_LENGTH 32
+#define M2X_ID_MAX_LENGTH 38
 #define M2X_PUBLISH_CHANNEL_LENGTH (M2X_KEY_MAX_LENGTH + 13)
 #define M2X_SUBSCRIBE_CHANNEL_LENGTH (M2X_KEY_MAX_LENGTH + 14)
+#define M2X_COMMANDS_CHANNEL_LENGTH (M2X_KEY_MAX_LENGTH + 13)
 
 #ifdef HAS_SSL
 #define M2X_SSL_PORT 8883
@@ -35,6 +39,7 @@ typedef struct m2x_context {
    */
   char pub_channel[M2X_PUBLISH_CHANNEL_LENGTH + 1];
   char sub_channel[M2X_SUBSCRIBE_CHANNEL_LENGTH + 1];
+  char commands_channel[M2X_COMMANDS_CHANNEL_LENGTH + 1];
   char key[M2X_KEY_MAX_LENGTH + 1];
   char assemble_buffer[M2X_BUFFER_LENGTH + 1];
 
@@ -42,10 +47,14 @@ typedef struct m2x_context {
   int verbose;
   int keepalive;
   m2x_json_parser json_parser;
+  m2x_json_command_parser json_command_parser;
   m2x_json_releaser json_releaser;
 #ifdef HAS_SSL
   int use_ssl;
 #endif  /* HAS_SSL */
+
+  /* Current status flags */
+  int commands_overflow; /* nonzero when received commands have been dropped */
 
   /* Paho API part */
   union {
@@ -66,6 +75,7 @@ int m2x_mqtt_is_connected(m2x_context *ctx);
 int m2x_mqtt_connect(m2x_context *ctx);
 void m2x_mqtt_disconnect(m2x_context *ctx);
 int m2x_mqtt_yield(m2x_context *ctx);
+int m2x_mqtt_yield_nonblock(m2x_context *ctx);
 
 #if defined(__cplusplus)
 }  /* extern "C" { */

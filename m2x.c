@@ -5,8 +5,13 @@
 #include "json_frozen.h"
 #include "m2x.h"
 #include "utility.h"
+#include "cmdq.h"
 
-extern void message_arrived_callback(MessageData* md);
+extern cmdq_t g_cmdq;
+extern m2x_context *g_message_ctx;
+
+extern void response_arrived_callback(MessageData* md);
+extern void command_arrived_callback(MessageData* md);
 
 /* Default releaser that uses free() */
 static void free_releaser(void *p)
@@ -21,6 +26,7 @@ void m2x_open(const char *key, m2x_context *ctx)
   ctx->verbose = 0;
   ctx->keepalive = 0;
   ctx->json_parser = m2x_parse_with_frozen;
+  ctx->json_command_parser = m2x_parse_command_with_frozen;
   ctx->json_releaser = free_releaser;
   /* Use SSL by default if at all possible */
 #ifdef HAS_SSL
@@ -30,6 +36,9 @@ void m2x_open(const char *key, m2x_context *ctx)
   strcpy(ctx->key, key);
   sprintf(ctx->pub_channel, "m2x/%s/requests", key);
   sprintf(ctx->sub_channel, "m2x/%s/responses", key);
+  sprintf(ctx->commands_channel, "m2x/%s/commands", key);
+
+  cmdq_init(&g_cmdq);
 }
 
 void m2x_close(m2x_context *ctx)
@@ -92,7 +101,14 @@ int m2x_mqtt_connect(m2x_context *ctx)
     return rc;
   }
 
-  rc = MQTTSubscribe(client, ctx->sub_channel, 2, message_arrived_callback);
+  rc = MQTTSubscribe(client, ctx->sub_channel, 2, response_arrived_callback);
+  if (rc != 0) {
+    MQTTDisconnect(client);
+    network->disconnect(network);
+    return rc;
+  }
+
+  rc = MQTTSubscribe(client, ctx->commands_channel, 2, command_arrived_callback);
   if (rc != 0) {
     MQTTDisconnect(client);
     network->disconnect(network);
@@ -130,7 +146,22 @@ int m2x_mqtt_yield(m2x_context *ctx) {
   if (!m2x_mqtt_is_connected(ctx)) {
     return 0;
   }
+  g_message_ctx = ctx; /* Set so that any callbacks have the right context. */
   rc = MQTTYield(client, M2X_TIMEOUT_MS);
+  if (rc != 0) {
+    m2x_mqtt_disconnect(ctx);
+  }
+  return rc;
+}
+
+int m2x_mqtt_yield_nonblock(m2x_context *ctx) {
+  Client *client = &(ctx->client);
+  int rc;
+  if (!m2x_mqtt_is_connected(ctx)) {
+    return 0;
+  }
+  g_message_ctx = ctx; /* Set so that any callbacks have the right context. */
+  rc = MQTTYield(client, 1);
   if (rc != 0) {
     m2x_mqtt_disconnect(ctx);
   }

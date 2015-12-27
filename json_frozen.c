@@ -48,3 +48,33 @@ m2x_json_status m2x_parse_with_frozen(const char *str, int length,
   }
   return M2X_JSON_OK;
 }
+
+m2x_json_status m2x_parse_command_with_frozen(const char *str, int length,
+                                              m2x_json_command *command) {
+  struct json_token *arr, *tok;
+
+  arr = parse_json2(str, length);
+  if (arr == NULL) {
+    return M2X_JSON_INVALID;
+  }
+
+  tok = find_json_token(arr, "id");
+  if (tok == NULL) {
+    free(arr);
+    return M2X_JSON_INVALID;
+  }
+  command->id_ptr = tok->ptr;
+  command->id_length = tok->len;
+
+  tok = find_json_token(arr, "sent_at");
+  if (tok == NULL) {
+    free(arr);
+    return M2X_JSON_INVALID;
+  }
+  command->sent_at_ptr = tok->ptr;
+  command->sent_at_length = tok->len;
+
+  command->json = (void *) arr;
+
+  return M2X_JSON_OK;
+}
