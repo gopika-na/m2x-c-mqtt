@@ -32,6 +32,15 @@ m2x_response m2x_device_post_stream_value(m2x_context *ctx, const char *id, cons
 m2x_response m2x_device_delete_stream_value(m2x_context *ctx, const char *id, const char *name, const char *data);
 m2x_response m2x_device_delete_stream(m2x_context *ctx, const char *id, const char *name);
 m2x_response m2x_device_post_updates(m2x_context *ctx, const char *id, const char *data);
+/*
+ * Notice this refers to Post Device Update (Single Values To Multiple Streams)
+ * API, which is different from the one above
+ *
+ * For more details, please check this link:
+ * https://m2x.att.com/developer/documentation/v2/device#Post-Device-Update--Single-Values-to-Multiple-Streams-
+ */
+m2x_response m2x_device_post_update(m2x_context *ctx, const char *id, const char *data);
+
 
 m2x_response m2x_device_commands(m2x_context *ctx, const char *id, const char *query);
 m2x_response m2x_device_view_command(m2x_context *ctx, const char *id, const char *command_id);

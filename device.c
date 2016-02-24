@@ -147,3 +147,9 @@ m2x_response m2x_device_reject_command(m2x_context *ctx, const char *id, const c
   const char *args[6] = {"/devices/", id, "/commands/", command_id, "/reject", NULL};
   return m2x_client_post(ctx, interleave_path_and_param_fill, args, data);
 }
+
+m2x_response m2x_device_post_update(m2x_context *ctx, const char *id, const char *data)
+{
+  const char *args[4] = {"/devices/", id, "/update", NULL};
+  return m2x_client_post(ctx, interleave_path_and_param_fill, args, data);
+}
