@@ -8,7 +8,7 @@ endif
 BUILD_DIR=../build
 EXAMPLES_BUILD_DIR=$(BUILD_DIR)/examples
 M2X_LIB=$(BUILD_DIR)/m2x.a
-BINS=$(addprefix $(EXAMPLES_BUILD_DIR)/,m2x_status list_devices create_device update_device delete_device_values update_stream_value post_stream_value process_commands)
+BINS=$(addprefix $(EXAMPLES_BUILD_DIR)/,m2x_status list_devices create_device update_device delete_device_values update_stream_value post_stream_value process_commands timestamp)
 OBJS=$(addsuffix .o, $(BINS))
 
 PAHO_PATH=../vendor/paho
