@@ -19,7 +19,7 @@ extern "C" {
 #define M2X_BUFFER_LENGTH 8192
 #define M2X_COMMAND_BUFFER_LENGTH 2048
 #define M2X_COMMAND_QUEUE_LENGTH 100
-#define M2X_TIMEOUT_MS 1000
+#define M2X_TIMEOUT_MS 100
 #define M2X_MESSAGE_ID_LEN 32
 #define M2X_HOST "api-m2x.att.com"
 #define M2X_PORT 1883
