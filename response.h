@@ -9,6 +9,7 @@ extern "C" {
 
 typedef struct m2x_response {
   int status;
+  int yields;
 
   /* This is the raw response from the server. It is managed by m2x
    * context, you don't need to free it. However, it is only valid

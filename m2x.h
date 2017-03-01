@@ -20,6 +20,12 @@ extern "C" {
 #define M2X_COMMAND_BUFFER_LENGTH 2048
 #define M2X_COMMAND_QUEUE_LENGTH 100
 #define M2X_TIMEOUT_MS 100
+/*
+ * Since per-yeild timeout is 100 milliseconds, doing a maximum of 20
+ * yields means our request-level timeout is roughly 2000 milliseconds,
+ * this is not very accurate but a simple solution that works.
+ */
+#define M2X_REQUEST_MAX_YIELDS 20
 #define M2X_MESSAGE_ID_LEN 32
 #define M2X_HOST "api-m2x.att.com"
 #define M2X_PORT 1883
@@ -28,6 +34,11 @@ extern "C" {
 #define M2X_PUBLISH_CHANNEL_LENGTH (M2X_KEY_MAX_LENGTH + 13)
 #define M2X_SUBSCRIBE_CHANNEL_LENGTH (M2X_KEY_MAX_LENGTH + 14)
 #define M2X_COMMANDS_CHANNEL_LENGTH (M2X_KEY_MAX_LENGTH + 13)
+
+/*
+ * Error codes defined here shouldn't conflict with Paho's returnCode
+ */
+#define M2X_ERROR_TIMEOUT -3
 
 #ifdef HAS_SSL
 #define M2X_SSL_PORT 8883

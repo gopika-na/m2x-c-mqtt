@@ -88,15 +88,22 @@ m2x_response m2x_client_get(m2x_context *ctx, path_filling_function f, const cha
   rc = publish_mqtt_message(ctx, g_message_id, "GET", f, args, NULL);
   if (rc != 0) {
     g_message_response.status = rc;
-    return g_message_response;
+    goto quit;
   }
   while (!g_got_message) {
+    if (g_message_response.yields < M2X_REQUEST_MAX_YIELDS) {
+      g_message_response.yields++;
+    } else {
+      g_message_response.status = M2X_ERROR_TIMEOUT;
+      goto quit;
+    }
     rc = m2x_mqtt_yield(ctx);
     if (rc != 0) {
       g_message_response.status = rc;
-      return g_message_response;
+      goto quit;
     }
   }
+quit:
   if (!ctx->keepalive) {
     m2x_mqtt_disconnect(ctx);
   }
@@ -116,15 +123,22 @@ m2x_response m2x_client_post(m2x_context *ctx, path_filling_function f, const ch
   rc = publish_mqtt_message(ctx, g_message_id, "POST", f, args, body);
   if (rc != 0) {
     g_message_response.status = rc;
-    return g_message_response;
+    goto quit;
   }
   while (!g_got_message) {
+    if (g_message_response.yields < M2X_REQUEST_MAX_YIELDS) {
+      g_message_response.yields++;
+    } else {
+      g_message_response.status = M2X_ERROR_TIMEOUT;
+      goto quit;
+    }
     rc = m2x_mqtt_yield(ctx);
     if (rc != 0) {
       g_message_response.status = rc;
-      return g_message_response;
+      goto quit;
     }
   }
+quit:
   if (!ctx->keepalive) {
     m2x_mqtt_disconnect(ctx);
   }
@@ -144,15 +158,22 @@ m2x_response m2x_client_put(m2x_context *ctx, path_filling_function f, const cha
   rc = publish_mqtt_message(ctx, g_message_id, "PUT", f, args, body);
   if (rc != 0) {
     g_message_response.status = rc;
-    return g_message_response;
+    goto quit;
   }
   while (!g_got_message) {
+    if (g_message_response.yields < M2X_REQUEST_MAX_YIELDS) {
+      g_message_response.yields++;
+    } else {
+      g_message_response.status = M2X_ERROR_TIMEOUT;
+      goto quit;
+    }
     rc = m2x_mqtt_yield(ctx);
     if (rc != 0) {
       g_message_response.status = rc;
-      return g_message_response;
+      goto quit;
     }
   }
+quit:
   if (!ctx->keepalive) {
     m2x_mqtt_disconnect(ctx);
   }
@@ -172,15 +193,22 @@ m2x_response m2x_client_delete(m2x_context *ctx, path_filling_function f, const 
   rc = publish_mqtt_message(ctx, g_message_id, "DELETE", f, args, body);
   if (rc != 0) {
     g_message_response.status = rc;
-    return g_message_response;
+    goto quit;
   }
   while (!g_got_message) {
+    if (g_message_response.yields < M2X_REQUEST_MAX_YIELDS) {
+      g_message_response.yields++;
+    } else {
+      g_message_response.status = M2X_ERROR_TIMEOUT;
+      goto quit;
+    }
     rc = m2x_mqtt_yield(ctx);
     if (rc != 0) {
       g_message_response.status = rc;
-      return g_message_response;
+      goto quit;
     }
   }
+quit:
   if (!ctx->keepalive) {
     m2x_mqtt_disconnect(ctx);
   }
