@@ -185,7 +185,15 @@ Options
 
 ## Keepalive
 
-The default behaviour of this library is to create a new connection each time an API function is called, however, this can be changed by changing `keepalive` field in the context object to 1. In this case, the library will maintain a connection to MQTT, and reuse it each time.
+The default behaviour of this library is to create a new connection each time an API function is called, however, this can be changed by changing `keepalive` field in the context object to 1:
+
+```
+m2x_context ctx;
+m2x_open(M2X_KEY, &ctx);
+ctx.keepalive = 1;
+```
+
+In this case, the library will maintain a connection to MQTT, and reuse it each time.
 
 NOTE: due to the protocol of MQTT, if you are using the keepalive option, you need to call `m2x_mqtt_yield` at certain periods(at least once per 10 seconds by default) to maintain the connection. In other words, you need to maintain such a loop:
 
