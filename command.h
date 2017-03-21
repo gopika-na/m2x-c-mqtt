@@ -1,3 +1,7 @@
+/** @file command.h
+ *  @brief Wrapper for AT&T M2X <a href="https://m2x.att.com/developer/documentation/v2/commands">Commands API</a>
+ */
+
 #ifndef M2X_COMMAND_H
 #define M2X_COMMAND_H
 

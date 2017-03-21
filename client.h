@@ -1,3 +1,5 @@
+/** @file client.h
+ */
 #ifndef M2X_CLIENT_H
 #define M2X_CLIENT_H
 

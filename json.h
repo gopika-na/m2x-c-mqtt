@@ -1,3 +1,6 @@
+/** @file json.h
+ */
+
 #ifndef M2X_JSON_H
 #define M2X_JSON_H
 

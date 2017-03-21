@@ -1,3 +1,6 @@
+/** @file utility.h
+ */
+
 #ifndef M2X_UTILITY_H
 #define M2X_UTILITY_H
 

@@ -1,3 +1,6 @@
+/** @file json_frozen.h
+ */
+
 #ifndef M2X_JSON_FROZEN_H
 #define M2X_JSON_FROZEN_H
 

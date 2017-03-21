@@ -1,3 +1,6 @@
+/** @file cmdq.h
+ */
+
 #ifndef M2X_CMDQ_H
 #define M2X_CMDQ_H
 

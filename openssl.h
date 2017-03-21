@@ -1,3 +1,5 @@
+/** @file openssl.h
+ */
 /* Paho-compatible Network implementation using OpenSSL */
 #include <openssl/rand.h>
 #include <openssl/ssl.h>

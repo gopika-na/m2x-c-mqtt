@@ -1,3 +1,6 @@
+/** @file response.h
+ */
+
 #ifndef M2X_RESPONSE_H
 #define M2X_RESPONSE_H
 
