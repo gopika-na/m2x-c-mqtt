@@ -8,14 +8,7 @@
  *
  * All methods in this client library require an API Key for authentication. There are multiple types of API Keys which provide granular access to your M2X resources. Please review the <a href="https://m2x.att.com/developer/documentation/v2/overview#API-Keys">API Keys documentation</a> for more details on the different types of keys available
  *
- * If an invalid API Key is utilized, you will receive the following error when calling client methods:
- *
- * ```javascript
- * >>>client.method(...)
- * Traceback (most recent call last):
- * ...
- * requests.exceptions.HTTPError: 401 Client Error: Unauthorized
- * ```
+ * If an invalid API Key is utilized, you will receive the HTTP Error 401 - Unauthorized.
  */
 #ifndef M2X_H
 #define M2X_H
